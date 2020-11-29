@@ -33,9 +33,9 @@ class Floor(pygame.sprite.Sprite):
 		return choice(self._get_plates())
 
 	def _get_plates(self):
-		plates = [f'source/floor/{plate_filename}'
-				   for plate_filename in os.listdir('source/floor')
-				   if self.type in plate_filename]
+		plates = [f'source/locations/{self.type}/floor/{plate_filename}'
+				  for plate_filename in os.listdir(f'source/locations/{self.type}/floor')
+				  if self.type in plate_filename]
 		return plates
 
 
