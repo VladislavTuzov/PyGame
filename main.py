@@ -33,7 +33,8 @@ class Floor(pygame.sprite.Sprite):
 		return choice(self._get_plates())
 
 	def _get_plates(self):
-		plates = [f'source/floor/{plate_filename}' for plate_filename in os.listdir('source/floor')
+		plates = [f'source/floor/{plate_filename}'
+				   for plate_filename in os.listdir('source/floor')
 				   if self.type in plate_filename]
 		return plates
 
@@ -45,8 +46,8 @@ def get_image_size(path):
 
 
 def main():
-	w, h = 600, 400
-	screen = pygame.display.set_mode((w, h))
+	width, height = 600, 400
+	screen = pygame.display.set_mode((width, height))
 	pygame.display.set_caption('Floor')
 
 	floor = Floor(4, 3, 'dungeon')
