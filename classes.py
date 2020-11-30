@@ -18,9 +18,9 @@ class BaseHero(pygame.sprite.Sprite):
 		self.speed = 90 / FPS # pixels per second
 		self.direction = [0, 0]
 
-	def change_direction(self, x_shift, y_shift):
-		self.direction[0] += x_shift
-		self.direction[1] += y_shift
+	def change_direction(self, x_vector_change, y_vector_change):
+		self.direction[0] += x_vector_change
+		self.direction[1] += y_vector_change
 
 	def move(self):
 		self.x += self.direction[0] * self.speed
