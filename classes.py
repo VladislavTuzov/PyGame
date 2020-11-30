@@ -13,11 +13,16 @@ class Hero(pygame.sprite.Sprite):
 		self.x = self.rect.centerx
 		self.y = self.rect.centery
 
-		self.speed = 10 # pixels per second
+		self.speed = 90 / 60 # pixels per frame
+		self.direction = [0, 0]
 
-	def move(self, x_shift, y_shift):
-		self.x += x_shift * self.speed
-		self.y += y_shift * self.speed
+	def change_direction(self, x_shift, y_shift):
+		self.direction[0] += x_shift
+		self.direction[1] += y_shift
+
+	def move(self,):
+		self.x += self.direction[0] * self.speed
+		self.y += self.direction[1] * self.speed
 
 		self.rect.center = (self.x, self.y)
 
