@@ -3,6 +3,8 @@ from random import choice
 
 import pygame
 
+from config import FPS
+
 
 class Hero(pygame.sprite.Sprite):
 	def __init__(self):
@@ -13,7 +15,7 @@ class Hero(pygame.sprite.Sprite):
 		self.x = self.rect.centerx
 		self.y = self.rect.centery
 
-		self.speed = 90 / 60 # pixels per frame
+		self.speed = 90 / FPS # pixels per second
 		self.direction = [0, 0]
 
 	def change_direction(self, x_shift, y_shift):
