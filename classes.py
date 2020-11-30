@@ -6,10 +6,10 @@ import pygame
 from config import FPS
 
 
-class Hero(pygame.sprite.Sprite):
-	def __init__(self):
+class BaseHero(pygame.sprite.Sprite):
+	def __init__(self, hero_name):
 		super().__init__()
-		self.image = pygame.image.load('source/heroes/knight.png')
+		self.image = pygame.image.load(f'source/heroes/{hero_name}.png')
 		self.rect = self.image.get_rect()
 
 		self.x = self.rect.centerx
@@ -22,11 +22,16 @@ class Hero(pygame.sprite.Sprite):
 		self.direction[0] += x_shift
 		self.direction[1] += y_shift
 
-	def move(self,):
+	def move(self):
 		self.x += self.direction[0] * self.speed
 		self.y += self.direction[1] * self.speed
 
 		self.rect.center = (self.x, self.y)
+
+
+class Knight(BaseHero):
+	def __init__(self):
+		super().__init__('knight')
 
 
 class Floor(pygame.sprite.Sprite):
