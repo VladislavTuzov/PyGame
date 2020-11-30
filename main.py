@@ -12,7 +12,7 @@ def main():
 	pygame.display.set_caption('Hero movement')
 	clock = pygame.time.Clock()
 
-	floor = Floor(5, 5, 'dungeon')
+	floor = Floor(12, 12, 'dungeon')
 	hero = Hero()
 
 	running = True
