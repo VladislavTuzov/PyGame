@@ -1,6 +1,6 @@
 import pygame
 
-from classes import Floor, Hero
+from classes import Floor, Knight
 import helpers
 
 from config import FPS
@@ -13,7 +13,7 @@ def main():
 	clock = pygame.time.Clock()
 
 	floor = Floor(12, 12, 'dungeon')
-	hero = Hero()
+	knight = Knight()
 
 	running = True
 	while running:
@@ -23,18 +23,18 @@ def main():
 			elif event.type == pygame.KEYDOWN:
 				if event.key in helpers.MOVEMENT_KEYS:
 					x_shift, y_shift = handle_movement(event)
-					hero.change_direction(x_shift, y_shift)
+					knight.change_direction(x_shift, y_shift)
 			elif event.type == pygame.KEYUP:
 				if event.key in helpers.MOVEMENT_KEYS:
 					x_shift, y_shift = handle_movement(event)
-					hero.change_direction(-x_shift, -y_shift)
+					knight.change_direction(-x_shift, -y_shift)
 
-		hero.move()
+		knight.move()
 
 		screen.fill((0, 0, 0))
 
 		screen.blit(floor.image, floor.rect)
-		screen.blit(hero.image, hero.rect)
+		screen.blit(knight.image, knight.rect)
 
 		pygame.display.flip()
 		clock.tick(FPS)
