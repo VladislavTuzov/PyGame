@@ -4,6 +4,24 @@ from random import choice
 import pygame
 
 
+class Hero(pygame.sprite.Sprite):
+	def __init__(self):
+		super().__init__()
+		self.image = pygame.image.load('source/heroes/knight.png')
+		self.rect = self.image.get_rect()
+
+		self.x = self.rect.centerx
+		self.y = self.rect.centery
+
+		self.speed = 10 # pixels per second
+
+	def move(self, x_shift, y_shift):
+		self.x += x_shift * self.speed
+		self.y += y_shift * self.speed
+
+		self.rect.center = (self.x, self.y)
+
+
 class Floor(pygame.sprite.Sprite):
 	def __init__(self, width, height, floor_type: str):
 		super().__init__()
