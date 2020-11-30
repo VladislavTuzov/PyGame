@@ -5,9 +5,10 @@ import helpers
 
 
 def main():
-	width, height = 600, 400
-	screen = pygame.display.set_mode((width, height))
-	pygame.display.set_caption('Floor')
+	screen_size = screen_width, screen_height = 600, 400
+	screen = pygame.display.set_mode(screen_size)
+	pygame.display.set_caption('Hero movement')
+	clock = pygame.time.Clock()
 
 	floor = Floor(5, 5, 'dungeon')
 	hero = Hero()
@@ -20,7 +21,13 @@ def main():
 			elif event.type == pygame.KEYDOWN:
 				if event.key in helpers.MOVEMENT_KEYS:
 					x_shift, y_shift = handle_movement(event)
-					hero.move(x_shift, y_shift)
+					hero.change_direction(x_shift, y_shift)
+			elif event.type == pygame.KEYUP:
+				if event.key in helpers.MOVEMENT_KEYS:
+					x_shift, y_shift = handle_movement(event)
+					hero.change_direction(-x_shift, -y_shift)
+
+		hero.move()
 
 		screen.fill((0, 0, 0))
 
@@ -28,6 +35,7 @@ def main():
 		screen.blit(hero.image, hero.rect)
 
 		pygame.display.flip()
+		clock.tick(60)
 
 
 def handle_movement(event):
