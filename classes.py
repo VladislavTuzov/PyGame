@@ -9,7 +9,7 @@ from config import FPS
 class BaseHero(pygame.sprite.Sprite):
 	def __init__(self, hero_name):
 		super().__init__()
-		self.image = pygame.image.load(f'source/heroes/{hero_name}.png')
+		self.image = pygame.image.load(f'source/heroes/{hero_name}/default.png')
 		self.rect = self.image.get_rect()
 
 		self.x = self.rect.centerx
