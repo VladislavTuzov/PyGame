@@ -8,7 +8,7 @@ MOVEMENT_KEYS = (pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d,
 class CombinedKey:
 	'''
 	Combine two or more keys into one.
-	Example: W and LEFT_ARROW -> LEFT
+	Example: W and UP_ARROW -> UP
 	'''
 	def __init__(self, *keys):
 		self.keys = keys
