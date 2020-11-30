@@ -8,22 +8,27 @@ from config import FPS
 
 def main():
 	screen_size = screen_width, screen_height = 600, 400
-	screen = pygame.display.set_mode(screen_size)
+	# screen = pygame.display.set_mode(screen_size)
+	screen = pygame.display.set_mode(flags=pygame.FULLSCREEN)
 	pygame.display.set_caption('Hero movement')
 	clock = pygame.time.Clock()
 
-	floor = Floor(12, 12, 'dungeon')
+	floor = Floor(48, 24, 'dungeon')
 	knight = Knight()
 
 	running = True
 	while running:
+
 		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
+			if (event.type == pygame.QUIT or 
+					event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
 				running = False
+
 			elif event.type == pygame.KEYDOWN:
 				if event.key in helpers.MOVEMENT_KEYS:
 					x_shift, y_shift = handle_movement(event)
 					knight.change_direction(x_shift, y_shift)
+
 			elif event.type == pygame.KEYUP:
 				if event.key in helpers.MOVEMENT_KEYS:
 					x_shift, y_shift = handle_movement(event)
