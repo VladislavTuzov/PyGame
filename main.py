@@ -3,6 +3,8 @@ import pygame
 from classes import Floor, Hero
 import helpers
 
+from config import FPS
+
 
 def main():
 	screen_size = screen_width, screen_height = 600, 400
@@ -35,7 +37,7 @@ def main():
 		screen.blit(hero.image, hero.rect)
 
 		pygame.display.flip()
-		clock.tick(60)
+		clock.tick(FPS)
 
 
 def handle_movement(event):
