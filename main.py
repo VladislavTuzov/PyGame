@@ -2,9 +2,8 @@ import os
 import pygame
 
 from classes import Floor, Knight, MenuButton
-import helpers
-
 from config import FPS
+import helpers
 
 
 def test_hero():
