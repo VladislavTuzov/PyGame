@@ -7,86 +7,86 @@ from config import FPS
 
 
 class BaseHero(pygame.sprite.Sprite):
-    def __init__(self, hero_name):
-        super().__init__()
-        self.image = pygame.image.load(f'source/heroes/{hero_name}/default.png')
-        self.rect = self.image.get_rect()
+	def __init__(self, hero_name):
+		super().__init__()
+		self.image = pygame.image.load(f'source/heroes/{hero_name}/default.png')
+		self.rect = self.image.get_rect()
 
-        self.x = self.rect.centerx
-        self.y = self.rect.centery
+		self.x = self.rect.centerx
+		self.y = self.rect.centery
 
-        self.speed = 90 / FPS  # pixels per second
-        self.direction = [0, 0]
+		self.speed = 90 / FPS  # pixels per second
+		self.direction = [0, 0]
 
-    def change_direction(self, x_vector_change, y_vector_change):
-        self.direction[0] += x_vector_change
-        self.direction[1] += y_vector_change
+	def change_direction(self, x_vector_change, y_vector_change):
+		self.direction[0] += x_vector_change
+		self.direction[1] += y_vector_change
 
-    def move(self):
-        self.x += self.direction[0] * self.speed
-        self.y += self.direction[1] * self.speed
+	def move(self):
+		self.x += self.direction[0] * self.speed
+		self.y += self.direction[1] * self.speed
 
-        self.rect.center = (self.x, self.y)
+		self.rect.center = (self.x, self.y)
 
 
 class Knight(BaseHero):
-    def __init__(self):
-        super().__init__('knight')
+	def __init__(self):
+		super().__init__('knight')
 
 
 class Floor(pygame.sprite.Sprite):
-    def __init__(self, width, height, floor_type: str):
-        super().__init__()
-        self.width = width
-        self.height = height
-        self.type = floor_type
+	def __init__(self, width, height, floor_type: str):
+		super().__init__()
+		self.width = width
+		self.height = height
+		self.type = floor_type
 
-        self.image = self._generate_image()
-        self.rect = self.image.get_rect()
+		self.image = self._generate_image()
+		self.rect = self.image.get_rect()
 
-    def _generate_image(self):
-        plate_size = get_image_size(self._get_random_plate())
-        plate_width, plate_height = plate_size
+	def _generate_image(self):
+		plate_size = get_image_size(self._get_random_plate())
+		plate_width, plate_height = plate_size
 
-        image_width = self.width * plate_width
-        image_height = self.height * plate_height
+		image_width = self.width * plate_width
+		image_height = self.height * plate_height
 
-        image = pygame.Surface((image_width, image_height))
-        for i in range(self.width):
-            for j in range(self.height):
-                plate = pygame.image.load(self._get_random_plate())
-                image.blit(plate, (plate_width * i, plate_height * j))
+		image = pygame.Surface((image_width, image_height))
+		for i in range(self.width):
+			for j in range(self.height):
+				plate = pygame.image.load(self._get_random_plate())
+				image.blit(plate, (plate_width * i, plate_height * j))
 
-        return image
+		return image
 
-    def _get_random_plate(self):
-        return choice(self._get_plates())
+	def _get_random_plate(self):
+		return choice(self._get_plates())
 
-    def _get_plates(self):
-        path = f'source/locations/{self.type}/floor'
-        plates = [f'{path}/{plate_filename}'
-                  for plate_filename in os.listdir(path)]
-        return plates
+	def _get_plates(self):
+		path = f'source/locations/{self.type}/floor'
+		plates = [f'{path}/{plate_filename}'
+				  for plate_filename in os.listdir(path)]
+		return plates
 
 
 def get_image_size(path):
-    from PIL import Image
-    image = Image.open(path)
-    return image.size
+	from PIL import Image
+	image = Image.open(path)
+	return image.size
 
 
 class MenuBtn:
-    def __init__(self):
-        super().__init__()
-        self.btn_continue = pygame.image.load(f'source/buttons/new_game.png')
-        self.btn_new_game = pygame.image.load(f'source/buttons/icon_continue.png')
-        self.btn_rect_continue = pygame.draw.rect(
-            screen, "red", (400, 650, 528, 714))
-        self.btn_rect_new_game = pygame.draw.rect(
-            screen, "red", (800, 650, 928, 714))
+	def __init__(self):
+		super().__init__()
+		self.btn_continue = pygame.image.load(f'source/buttons/new_game.png')
+		self.btn_new_game = pygame.image.load(f'source/buttons/icon_continue.png')
+		self.btn_rect_continue = pygame.draw.rect(
+			screen, "red", (400, 650, 528, 714))
+		self.btn_rect_new_game = pygame.draw.rect(
+			screen, "red", (800, 650, 928, 714))
 
-    def btn_continue(self):
-        return pygame.image.load(f'source/buttons/new_game.png')
+	def btn_continue(self):
+		return pygame.image.load(f'source/buttons/new_game.png')
 
-        def btn_new_game(self):
-            return pygame.image.load(f'source/buttons/icon_continue.png')
+		def btn_new_game(self):
+			return pygame.image.load(f'source/buttons/icon_continue.png')
