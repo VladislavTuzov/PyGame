@@ -70,9 +70,11 @@ class Floor(pygame.sprite.Sprite):
 
 
 def get_image_size(path):
-	from PIL import Image
-	image = Image.open(path)
-	return image.size
+	with open(path, 'rb') as file:
+		data = file.read(24)
+		width = int(data[16:20].hex(), 16)
+		height = int(data[20:24].hex(), 16)
+	return width, height
 
 
 class MenuButton(pygame.sprite.Sprite):
