@@ -75,18 +75,14 @@ def get_image_size(path):
 	return image.size
 
 
-class MenuBtn:
-	def __init__(self):
+class MenuButton(pygame.sprite.Sprite):
+	def __init__(self, button_name, x=0, y=0):
 		super().__init__()
-		self.btn_continue = pygame.image.load(f'source/buttons/new_game.png')
-		self.btn_new_game = pygame.image.load(f'source/buttons/icon_continue.png')
-		self.btn_rect_continue = pygame.draw.rect(
-			screen, "red", (400, 650, 528, 714))
-		self.btn_rect_new_game = pygame.draw.rect(
-			screen, "red", (800, 650, 928, 714))
+		self.image = pygame.image.load(f'source/buttons/{button_name}.png')
+		self.rect = self.image.get_rect()
 
-	def btn_continue(self):
-		return pygame.image.load(f'source/buttons/new_game.png')
+		self.rect.x = x
+		self.rect.y = y
 
-		def btn_new_game(self):
-			return pygame.image.load(f'source/buttons/icon_continue.png')
+	def collidepoint(self, coords):
+		return self.rect.collidepoint(coords)
