@@ -1,7 +1,8 @@
 import os
 import pygame
 
-from classes import Room, Knight, MenuButton, Dardo, CustomCursor
+from classes import Room, Knight, Dardo, Weapon
+from classes import MenuButton, CustomCursor
 from config import FPS
 import helpers
 
@@ -29,6 +30,8 @@ def test_hero():
 
 	room = Room(pattern, 'dungeon')
 	knight = Knight()
+	weapon = Weapon('shotgun')
+	knight.add_weapon(weapon)
 	enemy = Dardo()
 	enemy.rect.center = (100, 100)
 
@@ -56,6 +59,7 @@ def test_hero():
 
 		screen.blit(room.image, room.rect)
 		screen.blit(knight.image, knight.rect)
+		screen.blit(weapon.image, weapon.rect)
 		screen.blit(enemy.image, enemy.rect)
 
 		cursor.update_pos(pygame.mouse.get_pos())
