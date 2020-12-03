@@ -1,7 +1,7 @@
 import os
 import pygame
 
-from classes import Room, Knight, MenuButton
+from classes import Room, Knight, MenuButton, Dardo
 from config import FPS
 import helpers
 
@@ -26,6 +26,8 @@ def test_hero():
 
 	room = Room(pattern, 'dungeon')
 	knight = Knight()
+	enemy = Dardo()
+	enemy.rect.center = (100, 100)
 
 	running = True
 	while running:
@@ -51,6 +53,7 @@ def test_hero():
 
 		screen.blit(room.image, room.rect)
 		screen.blit(knight.image, knight.rect)
+		screen.blit(enemy.image, enemy.rect)
 
 		pygame.display.flip()
 		clock.tick(FPS)
