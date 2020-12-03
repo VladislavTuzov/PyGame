@@ -11,7 +11,10 @@ class BaseHero(pygame.sprite.Sprite):
 	def __init__(self, hero_name, hp, protection):
 		super().__init__()
 		# pygame attributes
-		self.image = pygame.image.load(f'source/heroes/{hero_name}/default.png')
+		self.image_left = pygame.image.load(f'source/heroes/{hero_name}/default_left.png')
+		self.image_right = pygame.image.load(f'source/heroes/{hero_name}/default_right.png')
+
+		self.image = self.image_left  # by default, then will be changed by direction
 		self.rect = self.image.get_rect()
 
 		self.x = self.rect.centerx
@@ -27,6 +30,11 @@ class BaseHero(pygame.sprite.Sprite):
 	def change_direction(self, x_vector_change, y_vector_change):
 		self.direction[0] += x_vector_change
 		self.direction[1] += y_vector_change
+
+		if self.direction[0] == -1:
+			self.image = self.image_left
+		else:
+			self.image = self.image_right
 
 	def move(self):
 		self.x += self.direction[0] * self.speed
