@@ -8,7 +8,7 @@ import helpers
 
 
 class BaseHero(pygame.sprite.Sprite):
-	def __init__(self, hero_name, hp, protection):
+	def __init__(self, hero_name, hp, protection, weapon_limit=2):
 		super().__init__()
 		# pygame attributes
 		self.image_left = pygame.image.load(f'source/heroes/{hero_name}/default_left.png')
@@ -23,6 +23,8 @@ class BaseHero(pygame.sprite.Sprite):
 		# gameplay attributes
 		self.hp = hp
 		self.protection = protection
+
+		self.weapons = Slots(weapon_limit)
 
 	def change_direction(self, x_vector_change, y_vector_change):
 		self.direction[0] += x_vector_change
@@ -43,14 +45,50 @@ class BaseHero(pygame.sprite.Sprite):
 		if walls.colliderect(self.rect):
 			self.rect.center = prev_center
 
+		self.weapon.rect.center = (self.rect.centerx, self.rect.centery + 10)
+
+	@property
+	def weapon(self):
+		return self.weapons[0]
+
+	def add_weapon(self, weapon):
+		self.weapons.add_weapon(weapon)
+	
+
+class Slots(list):
+	def __init__(self, limit):
+		list.__init__(self)
+		self.limit = limit
+
+	def add_weapon(self, weapon):
+		if len(self) < self.limit:
+			self.append(weapon)
+
+	def change_weapon(self, new_weapon):
+		self[0] = new_weapon
+
+	def delete_weapon(self):
+		self[:] = self[1:]
+
+	def scroll(self):
+		self[:] = self[1:] + self[:1]
+
+
+class Weapon(pygame.sprite.Sprite):
+	def __init__(self, weapon_name):
+		super().__init__()
+		self.image = pygame.image.load(f'source/weapons/{weapon_name}/{weapon_name}.png')
+		self.rect = self.image.get_rect()
+
 
 class Knight(BaseHero):
 	def __init__(self):
-		super().__init__('knight', hp=5, protection=5)
+		super().__init__('knight', hp=5, protection=5, weapon_limit=2)
 
 
 class BaseEnemy(pygame.sprite.Sprite):
 	def __init__(self, name, hp):
+		super().__init__()
 		self.image = pygame.image.load(f'source/enemies/{name}.png')
 		self.rect = self.image.get_rect()
 
