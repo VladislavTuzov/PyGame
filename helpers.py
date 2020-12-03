@@ -1,6 +1,8 @@
 import pygame
 
 
+# KEYS
+
 MOVEMENT_KEYS = (pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d,
 				 pygame.K_UP, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT)
 
@@ -21,3 +23,8 @@ UP    = CombinedKey(pygame.K_w, pygame.K_UP)
 DOWN  = CombinedKey(pygame.K_s, pygame.K_DOWN)
 LEFT  = CombinedKey(pygame.K_a, pygame.K_LEFT)
 RIGHT = CombinedKey(pygame.K_d, pygame.K_RIGHT)
+
+# WALLS
+
+WALL  = 'W'
+FLOOR = ' '
