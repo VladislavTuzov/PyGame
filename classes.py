@@ -52,6 +52,17 @@ class Knight(BaseHero):
 		super().__init__('knight', hp=5, protection=5)
 
 
+class BaseEnemy(pygame.sprite.Sprite):
+	def __init__(self, name, hp):
+		self.image = pygame.image.load(f'source/enemies/{name}.png')
+		self.rect = self.image.get_rect()
+
+
+class Dardo(BaseEnemy):
+	def __init__(self):
+		super().__init__('dardo', hp=3)
+
+
 class Room(pygame.sprite.Sprite):
 	def __init__(self, pattern, floor_type: str):
 		super().__init__()
