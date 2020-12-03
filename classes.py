@@ -17,10 +17,7 @@ class BaseHero(pygame.sprite.Sprite):
 		self.image = self.image_left  # by default, then will be changed by direction
 		self.rect = self.image.get_rect()
 
-		self.x = self.rect.centerx
-		self.y = self.rect.centery
-
-		self.speed = 120 / FPS  # pixels per second
+		self.speed = 180 / FPS  # pixels per second
 		self.direction = [0, 0]
 
 		# gameplay attributes
@@ -134,3 +131,12 @@ class MenuButton(pygame.sprite.Sprite):
 
 	def collidepoint(self, coords):
 		return self.rect.collidepoint(coords)
+
+
+class CustomCursor:
+	def __init__(self, filename):
+		self.image = pygame.image.load(f'source/cursors/{filename}')
+		self.rect = self.image.get_rect()
+
+	def update_pos(self, pos):
+		self.rect.center = pos
