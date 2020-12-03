@@ -24,7 +24,7 @@ DOWN  = CombinedKey(pygame.K_s, pygame.K_DOWN)
 LEFT  = CombinedKey(pygame.K_a, pygame.K_LEFT)
 RIGHT = CombinedKey(pygame.K_d, pygame.K_RIGHT)
 
-# WALLS
+# ROOM GENERATION
 
 WALL  = 'W'
 FLOOR = ' '
