@@ -1,7 +1,7 @@
 import os
 import pygame
 
-from classes import Floor, Knight, MenuButton
+from classes import Room, Knight, MenuButton
 from config import FPS
 import helpers
 
@@ -12,13 +12,15 @@ def test_hero():
 	pygame.display.set_caption('Hero Test')
 	clock = pygame.time.Clock()
 
-	pattern = ('#####',
-			   '#   #',
-			   '    #',
-			   '#   #',
-			   '## ##')
+	pattern = ('WWWWWWW',
+			   'W     W',
+			   '      W',
+			   '      W',
+			   '      W',
+			   'W     W',
+			   'WW   WW',)
 
-	floor = Floor.from_pattern(pattern, 'dungeon')
+	floor = Room(pattern, 'dungeon')
 	knight = Knight()
 
 	running = True
