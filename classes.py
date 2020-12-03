@@ -4,6 +4,7 @@ from random import choice
 import pygame
 
 from config import FPS
+import helpers
 
 
 class BaseHero(pygame.sprite.Sprite):
@@ -39,23 +40,17 @@ class Knight(BaseHero):
 		super().__init__('knight', hp=5, protection=5)
 
 
-class Floor(pygame.sprite.Sprite):
-	def __init__(self, width, height, floor_type: str):
+class Room(pygame.sprite.Sprite):
+	def __init__(self, pattern, floor_type: str):
 		super().__init__()
-		self.width = width
-		self.height = height
+		self.width = len(pattern[0])
+		self.height = len(pattern)
 		self.type = floor_type
 
-		self.image = self._generate_image()
+		self.image = self._generate_image(pattern)
 		self.rect = self.image.get_rect()
 
-	@classmethod
-	def from_pattern(cls, pattern, floor_type: str):
-		width = len(pattern[0])
-		height = len(pattern)
-		return cls(width, height, floor_type)
-
-	def _generate_image(self):
+	def _generate_image(self, pattern):
 		plate_size = get_image_size(self._get_random_plate())
 		plate_width, plate_height = plate_size
 
@@ -63,10 +58,14 @@ class Floor(pygame.sprite.Sprite):
 		image_height = self.height * plate_height
 
 		image = pygame.Surface((image_width, image_height))
-		for i in range(self.width):
-			for j in range(self.height):
-				plate = pygame.image.load(self._get_random_plate())
-				image.blit(plate, (plate_width * i, plate_height * j))
+		for i, row in enumerate(pattern):
+			for j, cell in enumerate(row):
+				if cell == helpers.FLOOR:
+					plate = pygame.image.load(self._get_random_plate())
+					image.blit(plate, (plate_width * j, plate_height * i))
+				elif cell == helpers.WALL:
+					wall = pygame.image.load(self._get_random_wall())
+					image.blit(wall, (plate_width * j, plate_height * i))
 
 		return image
 
@@ -78,6 +77,15 @@ class Floor(pygame.sprite.Sprite):
 		plates = [f'{path}/{plate_filename}'
 				  for plate_filename in os.listdir(path)]
 		return plates
+
+	def _get_random_wall(self):
+		return choice(self._get_walls())
+
+	def _get_walls(self):
+		path = f'source/locations/{self.type}/walls'
+		walls = [f'{path}/{wall_filename}'
+				  for wall_filename in os.listdir(path)]
+		return walls
 
 
 def get_image_size(path):
