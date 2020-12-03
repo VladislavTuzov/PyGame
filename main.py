@@ -1,19 +1,19 @@
 import os
 import pygame
 
-from classes import Room, Knight, MenuButton, Dardo
+from classes import Room, Knight, MenuButton, Dardo, CustomCursor
 from config import FPS
 import helpers
-
-cursor_image = pygame.image.load('cursor.png')
-cursor_rect = cursor_image.get_rect()
 
 
 def test_hero():
 	screen_size = screen_width, screen_height = 600, 400
 	screen = pygame.display.set_mode(flags=pygame.FULLSCREEN)
 	pygame.display.set_caption('Hero Test')
+
 	clock = pygame.time.Clock()
+	pygame.mouse.set_visible(False)
+	cursor = CustomCursor('cursor20.png')
 
 	pattern = ('  WWWWWWWWWWWWWW',
 			   '               W',
@@ -58,9 +58,8 @@ def test_hero():
 		screen.blit(knight.image, knight.rect)
 		screen.blit(enemy.image, enemy.rect)
 
-		mouse_pos = pygame.mouse.get_pos()
-		cursor_rect.center = mouse_pos
-		screen.blit(cursor_image, cursor_rect)
+		cursor.update_pos(pygame.mouse.get_pos())
+		screen.blit(cursor.image, cursor.rect)
 
 		pygame.display.flip()
 		clock.tick(FPS)
@@ -123,6 +122,5 @@ def test_menu():
 
 if __name__ == '__main__':
 	pygame.init()
-	pygame.mouse.set_visible(False)
 	test_hero()
 	pygame.quit()
