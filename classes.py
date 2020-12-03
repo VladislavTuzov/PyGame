@@ -49,6 +49,12 @@ class Floor(pygame.sprite.Sprite):
 		self.image = self._generate_image()
 		self.rect = self.image.get_rect()
 
+	@classmethod
+	def from_pattern(cls, pattern, floor_type: str):
+		width = len(pattern[0])
+		height = len(pattern)
+		return cls(width, height, floor_type)
+
 	def _generate_image(self):
 		plate_size = get_image_size(self._get_random_plate())
 		plate_width, plate_height = plate_size
