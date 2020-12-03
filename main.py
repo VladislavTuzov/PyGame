@@ -12,15 +12,19 @@ def test_hero():
 	pygame.display.set_caption('Hero Test')
 	clock = pygame.time.Clock()
 
-	pattern = ('WWWWWWW',
-			   'W     W',
-			   '      W',
-			   '      W',
-			   '      W',
-			   'W     W',
-			   'WW   WW',)
+	pattern = ('  WWWWWWWWWWWWWW',
+			   '               W',
+			   '               W',
+			   '               W',
+			   '        W      W',
+			   '       WWW     W',
+			   '         W     W',
+			   '      WWW      W',
+			   '               W',
+			   'W       W      W',
+			   'WWW          WWW',)
 
-	floor = Room(pattern, 'dungeon')
+	room = Room(pattern, 'dungeon')
 	knight = Knight()
 
 	running = True
@@ -41,11 +45,11 @@ def test_hero():
 					x_shift, y_shift = handle_movement(event)
 					knight.change_direction(-x_shift, -y_shift)
 
-		knight.move()
+		knight.move(room.walls)
 
 		screen.fill((0, 0, 0))
 
-		screen.blit(floor.image, floor.rect)
+		screen.blit(room.image, room.rect)
 		screen.blit(knight.image, knight.rect)
 
 		pygame.display.flip()
