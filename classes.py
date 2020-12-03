@@ -33,7 +33,7 @@ class BaseHero(pygame.sprite.Sprite):
 
 		if self.direction[0] == -1:
 			self.image = self.image_left
-		else:
+		elif self.direction[0] == 1:
 			self.image = self.image_right
 
 	def move(self):
