@@ -7,8 +7,9 @@ from config import FPS
 
 
 class BaseHero(pygame.sprite.Sprite):
-	def __init__(self, hero_name):
+	def __init__(self, hero_name, hp, protection):
 		super().__init__()
+		# pygame attributes
 		self.image = pygame.image.load(f'source/heroes/{hero_name}/default.png')
 		self.rect = self.image.get_rect()
 
@@ -17,6 +18,10 @@ class BaseHero(pygame.sprite.Sprite):
 
 		self.speed = 90 / FPS  # pixels per second
 		self.direction = [0, 0]
+
+		# gameplay attributes
+		self.hp = hp
+		self.protection = protection
 
 	def change_direction(self, x_vector_change, y_vector_change):
 		self.direction[0] += x_vector_change
@@ -31,7 +36,7 @@ class BaseHero(pygame.sprite.Sprite):
 
 class Knight(BaseHero):
 	def __init__(self):
-		super().__init__('knight')
+		super().__init__('knight', hp=5, protection=5)
 
 
 class Floor(pygame.sprite.Sprite):
