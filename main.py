@@ -12,7 +12,13 @@ def test_hero():
 	pygame.display.set_caption('Hero Test')
 	clock = pygame.time.Clock()
 
-	floor = Floor(24, 12, 'dungeon')
+	pattern = ('#####',
+			   '#   #',
+			   '    #',
+			   '#   #',
+			   '## ##')
+
+	floor = Floor.from_pattern(pattern, 'dungeon')
 	knight = Knight()
 
 	running = True
