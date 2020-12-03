@@ -32,8 +32,10 @@ class BaseHero(pygame.sprite.Sprite):
 
 		if self.direction[0] == -1:
 			self.image = self.image_left
+			self.weapon.image = self.weapon.image_left
 		elif self.direction[0] == 1:
 			self.image = self.image_right
+			self.weapon.image = self.weapon.image_right
 
 	def move(self, walls):
 		x = self.rect.centerx + self.direction[0] * self.speed
@@ -77,7 +79,9 @@ class Slots(list):
 class Weapon(pygame.sprite.Sprite):
 	def __init__(self, weapon_name):
 		super().__init__()
-		self.image = pygame.image.load(f'source/weapons/{weapon_name}/{weapon_name}.png')
+		self.image_left = pygame.image.load(f'source/weapons/{weapon_name}/left.png')
+		self.image_right = pygame.image.load(f'source/weapons/{weapon_name}/right.png')
+		self.image = self.image_left  # by default, then will be change by direction
 		self.rect = self.image.get_rect()
 
 
