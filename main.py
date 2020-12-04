@@ -30,11 +30,11 @@ def test_hero():
 
 	room = Room(pattern, 'dungeon')
 	knight = Knight()
-	knight.add_weapon(Weapon('broom', 0.1))
-	knight.add_weapon(Weapon('awp', 2))
+	knight.add_weapon(Weapon('broom', damage=1, cooldown=0.1))
+	knight.add_weapon(Weapon('awp', damage=5, cooldown=2))
 	bullets = pygame.sprite.Group()
 
-	enemies = pygame.sprite.Group()
+	enemies = helpers.RectGroup()
 	enemy = Dardo()
 	enemy.rect.center = (100, 100)
 	enemies.add(enemy)
@@ -67,7 +67,7 @@ def test_hero():
 
 		knight.move(room.walls)
 
-		screen.fill((0, 0, 0))
+		screen.fill('black')
 
 		screen.blit(room.image, room.rect)
 		screen.blit(knight.image, knight.rect)
@@ -76,7 +76,7 @@ def test_hero():
 		enemies.update()
 		enemies.draw(screen)
 
-		bullets.update()
+		bullets.update(room.walls, enemies)
 		bullets.draw(screen)
 
 		cursor.update_pos(pygame.mouse.get_pos())
