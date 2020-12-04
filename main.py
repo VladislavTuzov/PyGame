@@ -39,6 +39,7 @@ def test_hero():
 	enemy.rect.center = (100, 100)
 	enemies.add(enemy)
 
+	mouse_pressed = False
 	running = True
 	while running:
 
@@ -60,12 +61,21 @@ def test_hero():
 					knight.change_direction(-x_shift, -y_shift)
 
 			elif event.type == pygame.MOUSEBUTTONDOWN:
+				mouse_pressed = True
 				pos = event.pos
 				bullet = knight.shoot(pos)
 				if bullet:
 					bullets.add(bullet)
 
+			elif event.type == pygame.MOUSEBUTTONUP:
+				mouse_pressed = False
+
 		knight.move(room.walls)
+		if mouse_pressed:
+			pos = pygame.mouse.get_pos()
+			bullet = knight.shoot(pos)
+			if bullet:
+				bullets.add(bullet)
 
 		screen.fill('black')
 
