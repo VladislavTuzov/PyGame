@@ -30,7 +30,7 @@ def test_hero():
 
 	room = Room(pattern, 'dungeon')
 	knight = Knight()
-	weapon = Weapon('awp_test')
+	weapon = Weapon('awp_test', 5)
 	knight.add_weapon(weapon)
 	bullets = pygame.sprite.Group()
 	enemy = Dardo()
@@ -57,7 +57,8 @@ def test_hero():
 			elif event.type == pygame.MOUSEBUTTONDOWN:
 				pos = event.pos
 				bullet = knight.shoot(pos)
-				bullets.add(bullet)
+				if bullet:
+					bullets.add(bullet)
 
 		knight.move(room.walls)
 
