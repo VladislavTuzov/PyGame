@@ -33,9 +33,17 @@ WALL  = 'W'
 FLOOR = ' '
 
 
-class RectGroup(list):
+class RectList(list):
 	def __init__(self):
 		list.__init__(self)
 
 	def colliderect(self, rect):
 		return any(r.colliderect(rect) for r in self)
+
+
+class RectGroup(pygame.sprite.Group):
+	def __init__(self):
+		super().__init__()
+
+	def colliderect(self, rect):
+		return [s for s in self if s.rect.colliderect(rect)]
