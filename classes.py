@@ -93,7 +93,7 @@ class Slots(list):
 
 
 class Weapon(pygame.sprite.Sprite):
-	def __init__(self, weapon_name, cooldown):
+	def __init__(self, weapon_name, damage, cooldown):
 		super().__init__()
 		self.image_left = pygame.image.load(f'source/weapons/{weapon_name}/left.png')
 		self.image_right = pygame.image.load(f'source/weapons/{weapon_name}/right.png')
@@ -101,6 +101,7 @@ class Weapon(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 
 		self.weapon_name = weapon_name
+		self.damage = damage
 		self.cooldown = cooldown
 		self.previous_shot_time = time() - self.cooldown - 0.00001
 
@@ -108,17 +109,18 @@ class Weapon(pygame.sprite.Sprite):
 		shot_time = time()
 		if shot_time - self.previous_shot_time >= self.cooldown:
 			self.previous_shot_time = shot_time
-			return Bullet(self.weapon_name, self.rect.center, pos, speed=420)
+			return Bullet(self.weapon_name, self.rect.center, pos, speed=420, damage=self.damage)
 
 
 class Bullet(pygame.sprite.Sprite):
-	def __init__(self, weapon_name, start, pos, speed):
+	def __init__(self, weapon_name, start, pos, speed, damage):
 		super().__init__()
 		self.image = pygame.image.load(f'source/weapons/{weapon_name}/bullet.png')
 		self.rect = self.image.get_rect()
 		self.rect.center = start
 
 		self.speed = speed / FPS  # pixels by second
+		self.damage = damage
 
 		self.x0, self.y0 = start
 		x1, y1 = pos
@@ -127,11 +129,28 @@ class Bullet(pygame.sprite.Sprite):
 		self.y_distance = y1 - self.y0
 		self.target_distance = hypot(self.x_distance, self.y_distance)
 
-	def update(self):
+	def update(self, walls, enemies):
 		self.current_distance += self.speed
 		coeff = self.current_distance / self.target_distance
-		self.rect.centerx = self.x0 + self.x_distance * coeff
-		self.rect.centery = self.y0 + self.y_distance * coeff
+
+		x = self.x0 + self.x_distance * coeff
+		y = self.y0 + self.y_distance * coeff
+		prev_center = self.rect.center
+		self.rect.center = (x, y)
+
+		if walls.colliderect(self.rect):
+			self.rect.center = prev_center
+			self.kill()
+
+		collided_enemies = enemies.colliderect(self.rect)
+		if collided_enemies:
+			enemy = collided_enemies[0]
+			enemy.hit(self)
+			self.kill()
+
+		# self.current_distance -= self.speed
+		# no reason for this line because we
+		# deleted this bullet after wall collision
 
 
 class Knight(BaseHero):
@@ -144,6 +163,13 @@ class BaseEnemy(pygame.sprite.Sprite):
 		super().__init__()
 		self.image = pygame.image.load(f'source/enemies/{name}.png')
 		self.rect = self.image.get_rect()
+
+		self.hp = hp
+
+	def hit(self, bullet):
+		self.hp -= bullet.damage
+		if self.hp <= 0:
+			self.kill()
 
 
 class Dardo(BaseEnemy):
@@ -168,7 +194,7 @@ class Room(pygame.sprite.Sprite):
 		image_width = self.width * plate_width
 		image_height = self.height * plate_height
 
-		self.walls = helpers.RectGroup()
+		self.walls = helpers.RectList()
 
 		image = pygame.Surface((image_width, image_height))
 		for i, row in enumerate(pattern):
