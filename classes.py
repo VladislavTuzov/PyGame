@@ -102,7 +102,7 @@ class Weapon(pygame.sprite.Sprite):
 		self.weapon_name = weapon_name
 
 	def shoot(self, pos):
-		return Bullet(self.weapon_name, self.rect.center, pos, speed=200)
+		return Bullet(self.weapon_name, self.rect.center, pos, speed=420)
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -124,8 +124,8 @@ class Bullet(pygame.sprite.Sprite):
 	def update(self):
 		self.current_distance += self.speed
 		coeff = self.current_distance / self.target_distance
-		self.rect.centerx += self.x_distance * coeff
-		self.rect.centery += self.y_distance * coeff
+		self.rect.centerx = self.x0 + self.x_distance * coeff
+		self.rect.centery = self.y0 + self.y_distance * coeff
 
 
 class Knight(BaseHero):
