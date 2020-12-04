@@ -1,6 +1,7 @@
 import os
 from math import hypot
 from random import choice
+from time import time
 
 import pygame
 
@@ -92,7 +93,7 @@ class Slots(list):
 
 
 class Weapon(pygame.sprite.Sprite):
-	def __init__(self, weapon_name):
+	def __init__(self, weapon_name, cooldown):
 		super().__init__()
 		self.image_left = pygame.image.load(f'source/weapons/{weapon_name}/left.png')
 		self.image_right = pygame.image.load(f'source/weapons/{weapon_name}/right.png')
@@ -100,9 +101,14 @@ class Weapon(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 
 		self.weapon_name = weapon_name
+		self.cooldown = cooldown
+		self.previous_shot_time = time() - self.cooldown - 0.00001
 
 	def shoot(self, pos):
-		return Bullet(self.weapon_name, self.rect.center, pos, speed=420)
+		shot_time = time()
+		if shot_time - self.previous_shot_time >= self.cooldown:
+			self.previous_shot_time = shot_time
+			return Bullet(self.weapon_name, self.rect.center, pos, speed=420)
 
 
 class Bullet(pygame.sprite.Sprite):
