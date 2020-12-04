@@ -1,4 +1,5 @@
 import os
+from math import hypot
 from random import choice
 
 import pygame
@@ -49,12 +50,26 @@ class BaseHero(pygame.sprite.Sprite):
 
 		self.weapon.rect.center = (self.rect.centerx, self.rect.centery + 10)
 
+	def shoot(self, pos):
+		bullet = self.weapon.shoot(pos)
+		return bullet
+
 	@property
 	def weapon(self):
 		return self.weapons[0]
 
 	def add_weapon(self, weapon):
 		self.weapons.add_weapon(weapon)
+
+	def change_weapon(self, weapon):
+		self.weapons.change_weapon(weapon)
+
+	def delete_weapon(self, weapon):
+		if len(self.weapons) > 1:
+			self.weapons.delete_weapon(weapon)
+
+	def scroll(self):
+		self.weapons.scroll()
 	
 
 class Slots(list):
@@ -83,6 +98,34 @@ class Weapon(pygame.sprite.Sprite):
 		self.image_right = pygame.image.load(f'source/weapons/{weapon_name}/right.png')
 		self.image = self.image_left  # by default, then will be change by direction
 		self.rect = self.image.get_rect()
+
+		self.weapon_name = weapon_name
+
+	def shoot(self, pos):
+		return Bullet(self.weapon_name, self.rect.center, pos, speed=200)
+
+
+class Bullet(pygame.sprite.Sprite):
+	def __init__(self, weapon_name, start, pos, speed):
+		super().__init__()
+		self.image = pygame.image.load(f'source/weapons/{weapon_name}/bullet.png')
+		self.rect = self.image.get_rect()
+		self.rect.center = start
+
+		self.speed = speed / FPS  # pixels by second
+
+		self.x0, self.y0 = start
+		x1, y1 = pos
+		self.current_distance = 0
+		self.x_distance = x1 - self.x0
+		self.y_distance = y1 - self.y0
+		self.target_distance = hypot(self.x_distance, self.y_distance)
+
+	def update(self):
+		self.current_distance += self.speed
+		coeff = self.current_distance / self.target_distance
+		self.rect.centerx += self.x_distance * coeff
+		self.rect.centery += self.y_distance * coeff
 
 
 class Knight(BaseHero):
