@@ -30,11 +30,14 @@ def test_hero():
 
 	room = Room(pattern, 'dungeon')
 	knight = Knight()
-	weapon = Weapon('awp_test', 5)
-	knight.add_weapon(weapon)
+	knight.add_weapon(Weapon('broom', 0.1))
+	knight.add_weapon(Weapon('awp', 2))
 	bullets = pygame.sprite.Group()
+
+	enemies = pygame.sprite.Group()
 	enemy = Dardo()
 	enemy.rect.center = (100, 100)
+	enemies.add(enemy)
 
 	running = True
 	while running:
@@ -48,6 +51,8 @@ def test_hero():
 				if event.key in helpers.MOVEMENT_KEYS:
 					x_shift, y_shift = handle_movement(event)
 					knight.change_direction(x_shift, y_shift)
+				elif event.key == helpers.WEAPON_SCROLL:
+					knight.scroll()
 
 			elif event.type == pygame.KEYUP:
 				if event.key in helpers.MOVEMENT_KEYS:
@@ -66,8 +71,10 @@ def test_hero():
 
 		screen.blit(room.image, room.rect)
 		screen.blit(knight.image, knight.rect)
-		screen.blit(weapon.image, weapon.rect)
-		screen.blit(enemy.image, enemy.rect)
+		screen.blit(knight.weapon.image, knight.weapon.rect)
+		
+		enemies.update()
+		enemies.draw(screen)
 
 		bullets.update()
 		bullets.draw(screen)
