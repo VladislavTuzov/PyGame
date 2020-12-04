@@ -30,8 +30,9 @@ def test_hero():
 
 	room = Room(pattern, 'dungeon')
 	knight = Knight()
-	weapon = Weapon('shotgun')
+	weapon = Weapon('awp_test')
 	knight.add_weapon(weapon)
+	bullets = pygame.sprite.Group()
 	enemy = Dardo()
 	enemy.rect.center = (100, 100)
 
@@ -53,6 +54,11 @@ def test_hero():
 					x_shift, y_shift = handle_movement(event)
 					knight.change_direction(-x_shift, -y_shift)
 
+			elif event.type == pygame.MOUSEBUTTONDOWN:
+				pos = event.pos
+				bullet = knight.shoot(pos)
+				bullets.add(bullet)
+
 		knight.move(room.walls)
 
 		screen.fill((0, 0, 0))
@@ -61,6 +67,9 @@ def test_hero():
 		screen.blit(knight.image, knight.rect)
 		screen.blit(weapon.image, weapon.rect)
 		screen.blit(enemy.image, enemy.rect)
+
+		bullets.update()
+		bullets.draw(screen)
 
 		cursor.update_pos(pygame.mouse.get_pos())
 		screen.blit(cursor.image, cursor.rect)
