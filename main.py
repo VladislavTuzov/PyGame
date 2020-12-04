@@ -30,7 +30,7 @@ def test_hero():
 
 	room = Room(pattern, 'dungeon')
 	knight = Knight()
-	knight.add_weapon(Weapon('broom', damage=1, cooldown=0.1))
+	knight.add_weapon(Weapon('broom', damage=1, cooldown=0.01))
 	knight.add_weapon(Weapon('awp', damage=5, cooldown=2))
 	bullets = pygame.sprite.Group()
 
@@ -109,6 +109,8 @@ def handle_movement(event):
 
 
 def test_menu():
+	pygame.mixer.music.load('source/music/menu.wav')
+
 	screen_size = screen_width, screen_height = 600, 400
 	screen = pygame.display.set_mode(flags=pygame.FULLSCREEN)
 	pygame.display.set_caption('Menu Test')
@@ -119,6 +121,8 @@ def test_menu():
 	home_button = MenuButton('home', x=300, y=300)
 	settings_button = MenuButton('settings', x=400, y=400)
 	exit_button = MenuButton('exit', x=500, y=500)
+
+	pygame.mixer.music.play(loops=-1, fade_ms=10000)
 
 	running = True
 	while running:
@@ -139,7 +143,7 @@ def test_menu():
 					print('exit')
 					running = False
 
-		screen.fill((123, 123, 123))
+		screen.fill('black')
 
 		screen.blit(new_game_button.image, new_game_button.rect)
 		screen.blit(continue_button.image, continue_button.rect)
@@ -153,5 +157,5 @@ def test_menu():
 
 if __name__ == '__main__':
 	pygame.init()
-	test_hero()
+	test_menu()
 	pygame.quit()
