@@ -116,8 +116,17 @@ def test_menu():
 	pygame.display.set_caption('Menu Test')
 	clock = pygame.time.Clock()
 
-	new_game_button = MenuButton('new_game', x=100, y=100)
-	continue_button = MenuButton('continue', x=200, y=200)
+	screen_rect = screen.get_rect()
+	screen_width, screen_height = screen_rect.width, screen_rect.height
+
+	new_game_button = MenuButton('new_game')
+	new_game_button.rect.x = (screen_width - new_game_button.rect.width) // 2
+	new_game_button.rect.y = screen_height // 2 - new_game_button.rect.height * 1.25
+
+	continue_button = MenuButton('continue')
+	continue_button.rect.x = (screen_width - continue_button.rect.width) // 2
+	continue_button.rect.y = screen_height // 2 + continue_button.rect.height // 4
+
 	home_button = MenuButton('home', x=300, y=300)
 	settings_button = MenuButton('settings', x=400, y=400)
 	exit_button = MenuButton('exit', x=500, y=500)
