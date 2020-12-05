@@ -9,6 +9,8 @@ from config import FPS
 import helpers
 
 
+# ENTETIES
+
 class BaseHero(pygame.sprite.Sprite):
 	def __init__(self, hero_name, hp, protection, weapon_limit=2):
 		super().__init__()
@@ -26,7 +28,7 @@ class BaseHero(pygame.sprite.Sprite):
 		self.hp = hp
 		self.protection = protection
 
-		self.weapons = Slots(weapon_limit)
+		self.weapons = WeaponSlots(weapon_limit)
 
 	def change_direction(self, x_vector_change, y_vector_change):
 		self.direction[0] += x_vector_change
@@ -71,10 +73,35 @@ class BaseHero(pygame.sprite.Sprite):
 
 	def scroll(self):
 		self.weapons.scroll()
-		self.change_direction(0, 0)  # for change direction of weapon
+
+
+class Knight(BaseHero):
+	def __init__(self):
+		super().__init__('knight', hp=5, protection=5, weapon_limit=2)
+
+
+class BaseEnemy(pygame.sprite.Sprite):
+	def __init__(self, name, hp):
+		super().__init__()
+		self.image = pygame.image.load(f'source/enemies/{name}.png')
+		self.rect = self.image.get_rect()
+
+		self.hp = hp
+
+	def hit(self, bullet):
+		self.hp -= bullet.damage
+		if self.hp <= 0:
+			self.kill()
+
+
+class Dardo(BaseEnemy):
+	def __init__(self):
+		super().__init__('dardo', hp=3)
 	
 
-class Slots(list):
+# WEAPONS
+
+class WeaponSlots(list):
 	def __init__(self, limit):
 		list.__init__(self)
 		self.limit = limit
@@ -110,10 +137,11 @@ class Weapon(pygame.sprite.Sprite):
 		shot_time = time()
 		if shot_time - self.previous_shot_time >= self.cooldown:
 			self.previous_shot_time = shot_time
-			return Bullet(self.weapon_name, self.rect.center, pos, speed=420, damage=self.damage)
+			return BaseBullet(self.weapon_name, self.rect.center, pos,
+												speed=420, damage=self.damage)
 
 
-class Bullet(pygame.sprite.Sprite):
+class BaseBullet(pygame.sprite.Sprite):
 	def __init__(self, weapon_name, start, pos, speed, damage):
 		super().__init__()
 		self.image = pygame.image.load(f'source/weapons/{weapon_name}/bullet.png')
@@ -149,34 +177,8 @@ class Bullet(pygame.sprite.Sprite):
 			enemy.hit(self)
 			self.kill()
 
-		# self.current_distance -= self.speed
-		# no reason for this line because we
-		# deleted this bullet after wall collision
 
-
-class Knight(BaseHero):
-	def __init__(self):
-		super().__init__('knight', hp=5, protection=5, weapon_limit=2)
-
-
-class BaseEnemy(pygame.sprite.Sprite):
-	def __init__(self, name, hp):
-		super().__init__()
-		self.image = pygame.image.load(f'source/enemies/{name}.png')
-		self.rect = self.image.get_rect()
-
-		self.hp = hp
-
-	def hit(self, bullet):
-		self.hp -= bullet.damage
-		if self.hp <= 0:
-			self.kill()
-
-
-class Dardo(BaseEnemy):
-	def __init__(self):
-		super().__init__('dardo', hp=3)
-
+# LEVEL GENERATION
 
 class Room(pygame.sprite.Sprite):
 	def __init__(self, pattern, floor_type: str):
@@ -238,6 +240,8 @@ def get_image_size(path):
 	return width, height
 
 
+# MENU
+
 class MenuButton(pygame.sprite.Sprite):
 	def __init__(self, button_name, x=0, y=0):
 		super().__init__()
@@ -250,6 +254,8 @@ class MenuButton(pygame.sprite.Sprite):
 	def collidepoint(self, coords):
 		return self.rect.collidepoint(coords)
 
+
+# CURSOR
 
 class CustomCursor:
 	def __init__(self, filename):
