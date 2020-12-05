@@ -71,6 +71,7 @@ class BaseHero(pygame.sprite.Sprite):
 
 	def scroll(self):
 		self.weapons.scroll()
+		self.change_direction(0, 0)  # for change direction of weapon
 	
 
 class Slots(list):
