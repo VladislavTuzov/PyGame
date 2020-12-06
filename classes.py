@@ -120,7 +120,7 @@ class WeaponSlots(list):
 		self[:] = self[1:] + self[:1]
 
 
-class Weapon(pygame.sprite.Sprite):
+class BaseWeapon(pygame.sprite.Sprite):
 	def __init__(self, weapon_name, damage, cooldown):
 		super().__init__()
 		self.image_left = pygame.image.load(f'source/weapons/{weapon_name}/left.png')
@@ -179,6 +179,22 @@ class BaseBullet(pygame.sprite.Sprite):
 			enemy = collided_enemies[0]
 			enemy.hit(self)
 			self.kill()
+
+
+class Broom(BaseWeapon):
+	def __init__(self):
+		super().__init__('broom', 1, 0.2)
+
+	def shoot(self, pos):
+		shot_time = time()
+		if shot_time - self.previous_shot_time >= self.cooldown:
+			self.previous_shot_time = shot_time
+			return BroomBullet(self.weapon_name, self.rect.center, pos,
+												 speed=420, damage=self.damage)
+
+
+class BroomBullet(BaseBullet):
+	pass
 
 
 # LEVEL GENERATION
