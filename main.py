@@ -1,6 +1,6 @@
 import pygame
 
-from classes import Room, Knight, Dardo, Weapon
+from classes import Room, Knight, Dardo, BaseWeapon, Broom
 from classes import MenuButton, CustomCursor
 from config import FPS
 import helpers
@@ -30,8 +30,8 @@ def test_hero():
 
 	room = Room(pattern, 'dungeon')
 	knight = Knight()
-	knight.add_weapon(Weapon('broom', damage=1, cooldown=0.1))
-	knight.add_weapon(Weapon('awp', damage=5, cooldown=2))
+	knight.add_weapon(Broom())
+	knight.add_weapon(BaseWeapon('awp', damage=5, cooldown=2))
 	bullets = pygame.sprite.Group()
 
 	enemies = helpers.RectGroup()
@@ -161,8 +161,6 @@ def test_menu():
 		screen.blit(home_button.image, home_button.rect)
 		screen.blit(settings_button.image, settings_button.rect)
 		screen.blit(exit_button.image, exit_button.rect)
-
-		screen = pygame.transform.scale(screen, screen_size)
 
 		pygame.display.flip()
 		clock.tick(FPS)
