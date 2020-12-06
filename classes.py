@@ -142,7 +142,7 @@ class Weapon(pygame.sprite.Sprite):
 
 
 class BaseBullet(pygame.sprite.Sprite):
-	def __init__(self, weapon_name, start, pos, speed, damage):
+	def __init__(self, weapon_name, start, pos, speed, damage, max_distance=2000):
 		super().__init__()
 		self.image = pygame.image.load(f'source/weapons/{weapon_name}/bullet.png')
 		self.rect = self.image.get_rect()
@@ -150,6 +150,7 @@ class BaseBullet(pygame.sprite.Sprite):
 
 		self.speed = speed / FPS  # pixels by second
 		self.damage = damage
+		self.max_distance = max_distance
 
 		self.x0, self.y0 = start
 		x1, y1 = pos
@@ -160,6 +161,8 @@ class BaseBullet(pygame.sprite.Sprite):
 
 	def update(self, walls, enemies):
 		self.current_distance += self.speed
+		if self.current_distance >= self.max_distance:
+			self.kill()
 		coeff = self.current_distance / self.target_distance
 
 		x = self.x0 + self.x_distance * coeff
