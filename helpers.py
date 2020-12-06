@@ -34,6 +34,10 @@ FLOOR = ' '
 
 
 class RectList(list):
+	'''
+	List of rects that provide colliderect method.
+	Was made for easier wall collision check
+	'''
 	def __init__(self):
 		list.__init__(self)
 
@@ -42,6 +46,10 @@ class RectList(list):
 
 
 class RectGroup(pygame.sprite.Group):
+	'''
+	Pygame's Group but with colliderect method.
+	Was made for check bullet collision with enemies
+	'''
 	def __init__(self):
 		super().__init__()
 
