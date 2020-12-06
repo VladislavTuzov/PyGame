@@ -1,4 +1,3 @@
-import os
 import pygame
 
 from classes import Room, Knight, Dardo, Weapon
@@ -14,7 +13,7 @@ def test_hero():
 
 	clock = pygame.time.Clock()
 	pygame.mouse.set_visible(False)
-	cursor = CustomCursor('cursor20.png')
+	cursor = CustomCursor('cursor20alt.png')
 
 	pattern = ('  WWWWWWWWWWWWWW',
 			   '               W',
@@ -30,7 +29,7 @@ def test_hero():
 
 	room = Room(pattern, 'dungeon')
 	knight = Knight()
-	knight.add_weapon(Weapon('broom', damage=1, cooldown=0.01))
+	knight.add_weapon(Weapon('broom', damage=1, cooldown=0.1))
 	knight.add_weapon(Weapon('awp', damage=5, cooldown=2))
 	bullets = pygame.sprite.Group()
 
@@ -142,8 +141,10 @@ def test_menu():
 			elif event.type == pygame.MOUSEBUTTONDOWN:
 				if continue_button.collidepoint(event.pos):
 					print('continue')
+					pygame.mixer.music.fadeout(5000)
 				elif new_game_button.collidepoint(event.pos):
 					print('new_game')
+					pygame.mixer.music.fadeout(5000)
 				elif home_button.collidepoint(event.pos):
 					print('home')
 				elif settings_button.collidepoint(event.pos):
@@ -166,5 +167,5 @@ def test_menu():
 
 if __name__ == '__main__':
 	pygame.init()
-	test_menu()
+	test_hero()
 	pygame.quit()
