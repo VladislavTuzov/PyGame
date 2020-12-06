@@ -10,8 +10,6 @@ def test_hero():
 	screen_size = screen_width, screen_height = 1366, 768
 	screen = pygame.display.set_mode(screen_size,
 									 flags=pygame.FULLSCREEN | pygame.HWSURFACE | pygame.SCALED)
-	# pygame.display.set_mode(screen_size)
-	# screen = Surface(1366, 768)
 	pygame.display.set_caption('Hero Test')
 
 	clock = pygame.time.Clock()
