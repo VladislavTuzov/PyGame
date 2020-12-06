@@ -7,8 +7,11 @@ import helpers
 
 
 def test_hero():
-	screen_size = screen_width, screen_height = 600, 400
-	screen = pygame.display.set_mode(flags=pygame.FULLSCREEN)
+	screen_size = screen_width, screen_height = 1366, 768
+	screen = pygame.display.set_mode(screen_size,
+									 flags=pygame.FULLSCREEN | pygame.HWSURFACE | pygame.SCALED)
+	# pygame.display.set_mode(screen_size)
+	# screen = Surface(1366, 768)
 	pygame.display.set_caption('Hero Test')
 
 	clock = pygame.time.Clock()
@@ -160,6 +163,8 @@ def test_menu():
 		screen.blit(home_button.image, home_button.rect)
 		screen.blit(settings_button.image, settings_button.rect)
 		screen.blit(exit_button.image, exit_button.rect)
+
+		screen = pygame.transform.scale(screen, screen_size)
 
 		pygame.display.flip()
 		clock.tick(FPS)
