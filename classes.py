@@ -217,18 +217,27 @@ class Room(pygame.sprite.Sprite):
 		image_height = self.height * plate_height
 
 		self.walls = helpers.RectList()
+		self.gates = helpers.RectList()
 
 		image = pygame.Surface((image_width, image_height))
 		for i, row in enumerate(pattern):
 			for j, cell in enumerate(row):
+				x = plate_width * j
+				y = plate_height * i
+
 				if cell == helpers.FLOOR:
 					plate = pygame.image.load(self._get_random_plate())
-					image.blit(plate, (plate_width * j, plate_height * i))
+					image.blit(plate, (x, y))
+
 				elif cell == helpers.WALL:
 					wall = pygame.image.load(self._get_random_wall())
-					image.blit(wall, (plate_width * j, plate_height * i))
-					self.walls.append(pygame.Rect((plate_width * j, plate_height * i,
-												   plate_width, plate_height)))
+					image.blit(wall, (x, y))
+					self.walls.append(pygame.Rect((x, y, plate_width, plate_height)))
+
+				elif cell == helpers.GATES:
+					gate = pygame.image.load(self._get_random_wall())
+					image.blit(wall, (x, y))
+					self.gates.append(pygame.Rect((x, y, plate_width, plate_height)))
 
 		return image
 
@@ -249,6 +258,12 @@ class Room(pygame.sprite.Sprite):
 		walls = [f'{path}/{wall_filename}'
 				  for wall_filename in os.listdir(path)]
 		return walls
+
+	def close_gates(self):
+		self.walls.extend(self.gates)
+
+	def open_gates(self):
+		self.walls[:] = [wall for wall in self.walls if wall not in self.gates]
 
 
 def get_image_size(path):

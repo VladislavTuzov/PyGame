@@ -16,17 +16,17 @@ def test_hero():
 	pygame.mouse.set_visible(False)
 	cursor = CustomCursor('cursor20alt.png')
 
-	pattern = ('  WWWWWWWWWWWWWW',
+	pattern = ('           WWWWW',
 			   '               W',
 			   '               W',
 			   '               W',
-			   '        W      W',
-			   '       WWW     W',
-			   '         W     W',
-			   '      WWW      W',
-			   '               W',
-			   'W       W      W',
-			   'WWW          WWW',)
+			   '               G',
+			   '               G',
+			   '               G',
+			   'W              G',
+			   'W   W      W   W',
+			   'W              W',
+			   'WWWWGGGGGGGGWWWW',)
 
 	room = Room(pattern, 'dungeon')
 	knight = Knight()

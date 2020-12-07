@@ -31,6 +31,7 @@ WEAPON_SCROLL = pygame.K_TAB
 
 WALL  = 'W'
 FLOOR = ' '
+GATES = 'G'
 
 
 class RectList(list):
