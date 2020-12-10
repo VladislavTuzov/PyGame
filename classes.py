@@ -298,3 +298,9 @@ class CustomCursor:
 
 	def update_pos(self, pos):
 		self.rect.center = pos
+
+
+# EXCEPTIONS
+
+class MenuExitPseudoError(Exception):
+	pass
