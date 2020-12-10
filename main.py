@@ -1,8 +1,9 @@
 import pygame
 
-from classes import Room, Knight, Dardo, BaseWeapon, Broom
+import gameplay
+
+from classes import Knight, BaseWeapon, Broom
 from classes import MenuButton, CustomCursor
-from config import FPS
 import helpers
 
 
@@ -12,100 +13,14 @@ def test_hero():
 									 flags=pygame.FULLSCREEN | pygame.HWSURFACE | pygame.SCALED)
 	pygame.display.set_caption('Hero Test')
 
-	clock = pygame.time.Clock()
 	pygame.mouse.set_visible(False)
 	cursor = CustomCursor('cursor20alt.png')
 
-	pattern = ('           WWWWW',
-			   '               W',
-			   '               W',
-			   '               W',
-			   '               G',
-			   '               G',
-			   '               G',
-			   'W              G',
-			   'W   W      W   W',
-			   'W              W',
-			   'WWWWGGGGGGGGWWWW',)
-
-	room = Room(pattern, 'dungeon')
 	knight = Knight()
 	knight.add_weapon(Broom())
 	knight.add_weapon(BaseWeapon('awp', damage=5, cooldown=2))
-	bullets = pygame.sprite.Group()
 
-	enemies = helpers.RectGroup()
-	enemy = Dardo()
-	enemy.rect.center = (100, 100)
-	enemies.add(enemy)
-
-	mouse_pressed = False
-	running = True
-	while running:
-
-		for event in pygame.event.get():
-			if (event.type == pygame.QUIT
-					or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-				running = False
-
-			elif event.type == pygame.KEYDOWN:
-				if event.key in helpers.MOVEMENT_KEYS:
-					x_shift, y_shift = handle_movement(event)
-					knight.change_direction(x_shift, y_shift)
-				elif event.key == helpers.WEAPON_SCROLL:
-					knight.scroll()
-
-			elif event.type == pygame.KEYUP:
-				if event.key in helpers.MOVEMENT_KEYS:
-					x_shift, y_shift = handle_movement(event)
-					knight.change_direction(-x_shift, -y_shift)
-
-			elif event.type == pygame.MOUSEBUTTONDOWN:
-				mouse_pressed = True
-				pos = event.pos
-				bullet = knight.shoot(pos)
-				if bullet:
-					bullets.add(bullet)
-
-			elif event.type == pygame.MOUSEBUTTONUP:
-				mouse_pressed = False
-
-		knight.move(room.walls)
-		if mouse_pressed:
-			pos = pygame.mouse.get_pos()
-			bullet = knight.shoot(pos)
-			if bullet:
-				bullets.add(bullet)
-
-		screen.fill('black')
-
-		screen.blit(room.image, room.rect)
-		screen.blit(knight.image, knight.rect)
-		screen.blit(knight.weapon.image, knight.weapon.rect)
-		
-		enemies.update()
-		enemies.draw(screen)
-
-		bullets.update(room.walls, enemies)
-		bullets.draw(screen)
-
-		cursor.update_pos(pygame.mouse.get_pos())
-		screen.blit(cursor.image, cursor.rect)
-
-		pygame.display.flip()
-		clock.tick(FPS)
-
-
-def handle_movement(event):
-	if event.key == helpers.UP:
-		x_shift, y_shift = 0, -1
-	elif event.key == helpers.LEFT:
-		x_shift, y_shift = -1, 0
-	elif event.key == helpers.DOWN:
-		x_shift, y_shift = 0, +1
-	elif event.key == helpers.RIGHT:
-		x_shift, y_shift = +1, 0
-	return x_shift, y_shift
+	gameplay.play_level(screen, cursor, knight)
 
 
 def test_menu():
