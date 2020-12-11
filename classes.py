@@ -302,5 +302,10 @@ class CustomCursor:
 
 # EXCEPTIONS
 
-class MenuExitPseudoError(Exception):
+class ExitPseudoError(Exception):
 	pass
+
+
+class NewGamePseudoError(Exception):
+    pass
+

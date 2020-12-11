@@ -5,7 +5,7 @@ import menu
 
 from classes import Knight, BaseWeapon, Broom
 from classes import MenuButton, CustomCursor
-from classes import MenuExitPseudoError
+from classes import ExitPseudoError, NewGamePseudoError
 import helpers
 
 
@@ -24,9 +24,10 @@ def main():
 
 	try:
 		menu.menu_screen(screen, cursor)
-	except MenuExitPseudoError:
-		pass
-	gameplay.play_level(screen, cursor, knight)
+	except NewGamePseudoError:
+        gameplay.play_level(screen, cursor, knight)
+    except ExitPseudoError:
+        pass
 
 
 if __name__ == '__main__':

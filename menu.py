@@ -2,7 +2,8 @@ import pygame
 import sys
 
 from config import FPS
-from classes import MenuButton, MenuExitPseudoError
+from classes import MenuButton
+from classes import ExitPseudoError, NewGamePseudoError
 
 
 def menu_screen(screen, cursor):
@@ -38,14 +39,14 @@ def menu_screen(screen, cursor):
 					print('continue')
 					pygame.mixer.music.fadeout(5000)
 				elif new_game_button.collidepoint(event.pos):
-					print('new_game')
+					raise NewGamePseudoError('start new game')
 					pygame.mixer.music.fadeout(5000)
 				elif home_button.collidepoint(event.pos):
 					print('home')
 				elif settings_button.collidepoint(event.pos):
 					print('settings')
 				elif exit_button.collidepoint(event.pos):
-					raise MenuExitPseudoError('exit from menu')
+					raise ExitPseudoError('exit from menu')
 
 		screen.fill('black')
 
