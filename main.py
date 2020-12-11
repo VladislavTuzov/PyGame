@@ -25,9 +25,9 @@ def main():
 	try:
 		menu.menu_screen(screen, cursor)
 	except NewGamePseudoError:
-        gameplay.play_level(screen, cursor, knight)
-    except ExitPseudoError:
-        pass
+		gameplay.play_level(screen, cursor, knight)
+	except ExitPseudoError:
+		pass
 
 
 if __name__ == '__main__':
