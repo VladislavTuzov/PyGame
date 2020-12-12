@@ -2,8 +2,8 @@ import pygame
 import sys
 
 from config import FPS
-from classes import MenuButton
-from classes import ExitPseudoError, NewGamePseudoError
+from classes.interface import MenuButton
+from classes.exceptions import ExitPseudoError, NewGamePseudoError
 
 
 def menu_screen(screen, cursor):

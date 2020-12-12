@@ -3,9 +3,10 @@ import pygame
 import gameplay
 import menu
 
-from classes import Knight, BaseWeapon, Broom
-from classes import CustomCursor
-from classes import ExitPseudoError, NewGamePseudoError
+from classes.heroes import Knight
+from classes.weapons import BaseWeapon, Broom
+from classes.interface import CustomCursor
+from classes.exceptions import ExitPseudoError, NewGamePseudoError
 import helpers
 
 
@@ -19,8 +20,8 @@ def main():
 	cursor = CustomCursor('cursor20alt.png')
 
 	knight = Knight()
-	knight.add_weapon(Broom())
 	knight.add_weapon(BaseWeapon('awp', damage=5, cooldown=2))
+	knight.add_weapon(Broom())
 
 	try:
 		menu.menu_screen(screen, cursor)

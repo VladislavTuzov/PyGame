@@ -1,7 +1,8 @@
 import pygame
 
 from config import FPS
-from classes import Room, Dardo
+from classes.generation import Room
+from classes.enemies import Dardo
 import helpers
 from patterns import get_random_pattern
 
