@@ -38,6 +38,7 @@ H_GATE = '-'
 WALL  = 'W'
 FLOOR = ' '
 GATES = 'G'
+BIRTH = 'B'
 
 
 class RectList(list):
