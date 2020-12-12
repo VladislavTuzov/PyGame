@@ -29,6 +29,12 @@ WEAPON_SCROLL = pygame.K_TAB
 
 # ROOM GENERATION
 
+PORTAL = 'P'
+SPAWN  = 'S'
+ROOM   = '#'
+V_GATE = '|'
+H_GATE = '-'
+
 WALL  = 'W'
 FLOOR = ' '
 GATES = 'G'

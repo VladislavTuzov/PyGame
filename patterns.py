@@ -13,3 +13,9 @@ pattern = ('           WWWWW',
 		   'W   W      W   W',
 		   'W              W',
 		   'WWWWGGGGGGGGWWWW',)
+
+scheme = ('P-#-#',
+		  '  |  ',
+		  '#-#  ',
+		  '  |  ',
+		  '  #-S')
