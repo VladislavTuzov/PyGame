@@ -39,8 +39,8 @@ def menu_screen(screen, cursor):
 					print('continue')
 					pygame.mixer.music.fadeout(5000)
 				elif new_game_button.collidepoint(event.pos):
+                    pygame.mixer.music.fadeout(5000)
 					raise NewGamePseudoError('start new game')
-					pygame.mixer.music.fadeout(5000)
 				elif home_button.collidepoint(event.pos):
 					print('home')
 				elif settings_button.collidepoint(event.pos):
