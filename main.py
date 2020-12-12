@@ -4,7 +4,7 @@ import gameplay
 import menu
 
 from classes import Knight, BaseWeapon, Broom
-from classes import MenuButton, CustomCursor
+from classes import CustomCursor
 from classes import ExitPseudoError, NewGamePseudoError
 import helpers
 

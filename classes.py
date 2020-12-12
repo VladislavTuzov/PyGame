@@ -1,3 +1,4 @@
+from collections import deque
 import os
 from math import hypot
 from random import choice
@@ -97,27 +98,28 @@ class BaseEnemy(pygame.sprite.Sprite):
 class Dardo(BaseEnemy):
 	def __init__(self):
 		super().__init__('dardo', hp=3)
-	
+
 
 # WEAPONS
 
-class WeaponSlots(list):
+class WeaponSlots(deque):
 	def __init__(self, limit):
-		list.__init__(self)
+		super().__init__()
 		self.limit = limit
 
 	def add_weapon(self, weapon):
 		if len(self) < self.limit:
-			self.append(weapon)
+			self.appendleft(weapon)
 
 	def change_weapon(self, new_weapon):
 		self[0] = new_weapon
 
 	def delete_weapon(self):
-		self[:] = self[1:]
+		if self:
+			self.popleft()
 
 	def scroll(self):
-		self[:] = self[1:] + self[:1]
+		self.rotate(-1)
 
 
 class BaseWeapon(pygame.sprite.Sprite):
@@ -137,8 +139,13 @@ class BaseWeapon(pygame.sprite.Sprite):
 		shot_time = time()
 		if shot_time - self.previous_shot_time >= self.cooldown:
 			self.previous_shot_time = shot_time
-			return BaseBullet(self.weapon_name, self.rect.center, pos,
-												speed=420, damage=self.damage)
+			return BaseBullet(
+						self.weapon_name,
+						self.rect.center,
+						pos,
+						speed=420,
+						damage=self.damage
+				   )
 
 
 class BaseBullet(pygame.sprite.Sprite):
@@ -189,8 +196,13 @@ class Broom(BaseWeapon):
 		shot_time = time()
 		if shot_time - self.previous_shot_time >= self.cooldown:
 			self.previous_shot_time = shot_time
-			return BroomBullet(self.weapon_name, self.rect.center, pos,
-												 speed=420, damage=self.damage)
+			return BroomBullet(
+						self.weapon_name,
+						self.rect.center,
+						pos,
+						speed=420,
+						damage=self.damage
+				   )
 
 
 class BroomBullet(BaseBullet):
@@ -236,7 +248,7 @@ class Room(pygame.sprite.Sprite):
 
 				elif cell == helpers.GATES:
 					gate = pygame.image.load(self._get_random_wall())
-					image.blit(wall, (x, y))
+					image.blit(gate, (x, y))
 					self.gates.append(pygame.Rect((x, y, plate_width, plate_height)))
 
 		return image
@@ -308,4 +320,3 @@ class ExitPseudoError(Exception):
 
 class NewGamePseudoError(Exception):
     pass
-

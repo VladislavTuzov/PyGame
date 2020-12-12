@@ -40,7 +40,7 @@ class RectList(list):
 	Was made for easier wall collision check
 	'''
 	def __init__(self):
-		list.__init__(self)
+		super().__init__()
 
 	def colliderect(self, rect):
 		return any(r.colliderect(rect) for r in self)

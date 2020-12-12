@@ -61,7 +61,7 @@ def play_level(screen, cursor, hero, location='dungeon'):
 		screen.blit(room.image, room.rect)
 		screen.blit(hero.image, hero.rect)
 		screen.blit(hero.weapon.image, hero.weapon.rect)
-		
+
 		enemies.update()
 		enemies.draw(screen)
 
