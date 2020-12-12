@@ -3,6 +3,7 @@ import pygame
 import gameplay
 import menu
 
+import config
 from classes.heroes import Knight
 from classes.weapons import BaseWeapon, Broom
 from classes.interface import CustomCursor
@@ -14,10 +15,10 @@ def main():
 	screen_size = screen_width, screen_height = 1366, 768
 	screen = pygame.display.set_mode(screen_size,
 									 flags=pygame.FULLSCREEN | pygame.HWSURFACE | pygame.SCALED)
-	pygame.display.set_caption('Hero Test')
+	pygame.display.set_caption('Game')
 
 	pygame.mouse.set_visible(False)
-	cursor = CustomCursor('cursor20alt.png')
+	cursor = CustomCursor(config.CURSOR_FILENAME)
 
 	knight = Knight()
 	knight.add_weapon(BaseWeapon('awp', damage=5, cooldown=2))
