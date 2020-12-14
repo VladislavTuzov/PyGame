@@ -1,10 +1,9 @@
 import pygame
 
 from config import FPS
-from classes.generation import Room
+from classes.generation import Level
 from classes.enemies import Dardo
 import helpers
-from patterns import get_random_pattern
 
 
 def play_level(screen, cursor, hero, location='dungeon'):
@@ -12,8 +11,7 @@ def play_level(screen, cursor, hero, location='dungeon'):
 
     bullets = pygame.sprite.Group()
 
-
-    room = Room(get_random_pattern(), location)
+    room = Level(location).current_room
     hero.rect.center = room.hero_position
 
     enemies = helpers.RectGroup()
