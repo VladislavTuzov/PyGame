@@ -9,13 +9,52 @@ import patterns
 
 class Level:
     def __init__(self, location):
+        self.location = location
         self.scheme = patterns.get_random_scheme()
-        self.current_room = Room(patterns.get_random_pattern(), location)
+        self._parse_scheme()
+
+    def _parse_scheme(self):
+        self.matrix = [[None for _ in range(len(self.scheme[0]))]
+                       for _ in range(len(self.scheme))]
+        for i, row in enumerate(self.scheme):
+            for j, cell in enumerate(row):
+                if cell in helpers.ROOMS:
+                    if cell == helpers.SPAWN:
+                        pattern = patterns.get_random_spawn()
+                        self._add_gates(pattern, i, j)
+                        self.matrix[i][j] = Room(pattern.pattern, self.location)
+                        self.current_room = self.matrix[i][j]
+                    elif cell == helpers.ROOM:
+                        pattern = patterns.get_random_pattern()
+                        self._add_gates(pattern, i, j)
+                        self.matrix[i][j] = Room(pattern.pattern, self.location)
+                elif cell in helpers.TUNNELS:
+                    tunnel = Tunnel()
+                    self.matrix[i][j] = tunnel
+                else:
+                    continue
+
+    def _add_gates(self, pattern, i, j):
+        for x in range(i - 1, i + 2):
+            for y in range(j - 1, j + 2):
+                try:
+                    near_cell = self.scheme[x][y]
+                    if near_cell == helpers.V_TUNN:
+                        if x == i - 1:
+                            pattern.add_top_gate()
+                        elif x == i + 1:
+                            pattern.add_bottom_gate()
+                    elif near_cell == helpers.H_TUNN:
+                        if y == j - 1:
+                            pattern.add_left_gate()
+                        elif y == j + 1:
+                            pattern.add_right_gate()
+                except IndexError:
+                    continue
 
 
-class Room(pygame.sprite.Sprite):
+class Room:
     def __init__(self, pattern, location):
-        super().__init__()
         self.width = len(pattern[0])
         self.height = len(pattern)
         self.location = location

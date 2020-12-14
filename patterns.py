@@ -46,7 +46,11 @@ def get_random_scheme():
 
 
 def get_random_pattern():
-    return pattern
+    return Pattern(pattern)
+
+
+def get_random_spawn():
+    return Pattern(spawn)
 
 
 pattern = ('WWWWWWWWWWWWWWWWWWWW',
@@ -68,6 +72,14 @@ spawn = ('WWWWWWWWW',
          'W   B   W',
          'W       W',
          'WWWWWWWWW',)
+
+portal = ('WWWWWWW',
+          'W     W',
+          'W     W',
+          'W  P  W',
+          'W     W',
+          'W     W',
+          'WWWWWWW')
 
 scheme = ('P-#-#',
           '  |  ',

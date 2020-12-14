@@ -32,8 +32,11 @@ WEAPON_SCROLL = pygame.K_TAB
 PORTAL = 'P'
 SPAWN  = 'S'
 ROOM   = '#'
-V_GATE = '|'
-H_GATE = '-'
+BOSS   = 'B'
+V_TUNN = '|'
+H_TUNN = '-'
+ROOMS   = (PORTAL, SPAWN, ROOM)
+TUNNELS = (V_TUNN, H_TUNN)
 
 WALL  = 'W'
 FLOOR = ' '
