@@ -10,7 +10,6 @@ def play_level(screen, cursor, hero, location='dungeon'):
     clock = pygame.time.Clock()
 
     room = Level(location).current_room
-    room = Room(get_random_pattern(), location)
     hero.rect.center = room.hero_position
 
     enemies = helpers.RectGroup()
