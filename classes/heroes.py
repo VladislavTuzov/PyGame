@@ -18,6 +18,8 @@ class BaseHero(pygame.sprite.Sprite):
         self.speed = 180 / FPS  # pixels per second
         self.direction = [0, 0]
 
+        self.x_direction = 0  # help us to rotate weapon when scrolling
+
         # gameplay attributes
         self.hp = hp
         self.protection = protection
@@ -34,6 +36,8 @@ class BaseHero(pygame.sprite.Sprite):
         elif self.direction[0] == 1:
             self.image = self.image_right
             self.weapon.image = self.weapon.image_right
+
+        self.x_direction = self.direction[0] or self.x_direction
 
     def move(self, walls):
         x = self.rect.centerx + self.direction[0] * self.speed
@@ -67,6 +71,9 @@ class BaseHero(pygame.sprite.Sprite):
 
     def scroll(self):
         self.weapons.scroll()
+        x_direction = self.x_direction
+        self.change_direction(+x_direction, 0)
+        self.change_direction(-x_direction, 0)
 
 
 class WeaponSlots(deque):
