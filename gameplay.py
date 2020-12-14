@@ -11,7 +11,11 @@ def play_level(screen, cursor, hero, location='dungeon'):
 
     bullets = pygame.sprite.Group()
 
+<<<<<<< HEAD
     room = Level(location).current_room
+=======
+    room = Room(get_random_pattern(), location)
+>>>>>>> e41ad689231e2ca5e1dcb4d761f27b4afcd40da7
     hero.rect.center = room.hero_position
 
     enemies = helpers.RectGroup()
