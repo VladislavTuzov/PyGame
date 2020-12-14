@@ -1,5 +1,5 @@
 class ExitPseudoError(Exception):
-	pass
+    pass
 
 
 class NewGamePseudoError(Exception):
