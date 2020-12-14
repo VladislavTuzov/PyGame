@@ -44,8 +44,13 @@ class BaseHero(pygame.sprite.Sprite):
         y = self.rect.centery + self.direction[1] * self.speed
 
         prev_center = self.rect.center
-        self.rect.center = (x, y)
+        # self.rect.center = (x, y)
+        self.rect.centerx = x
+        if walls.colliderect(self.rect):
+            self.rect.center = prev_center
 
+        prev_center = self.rect.center
+        self.rect.centery = y
         if walls.colliderect(self.rect):
             self.rect.center = prev_center
 
