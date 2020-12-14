@@ -13,10 +13,10 @@ class Room(pygame.sprite.Sprite):
         self.height = len(pattern)
         self.type = floor_type
 
-        self.image = self._generate_image(pattern)
+        self.image = self._parse_pattern(pattern)
         self.rect = self.image.get_rect()
 
-    def _generate_image(self, pattern):
+    def _parse_pattern(self, pattern):
         plate_size = get_image_size(self._get_random_plate())
         plate_width, plate_height = plate_size
 
@@ -25,6 +25,9 @@ class Room(pygame.sprite.Sprite):
 
         self.walls = helpers.RectList()
         self.gates = helpers.RectList()
+
+        self.hero_position = (0, 0)
+        self.enemies_spawnpoints = []
 
         image = pygame.Surface((image_width, image_height))
         for i, row in enumerate(pattern):
@@ -42,9 +45,19 @@ class Room(pygame.sprite.Sprite):
                     self.walls.append(pygame.Rect((x, y, plate_width, plate_height)))
 
                 elif cell == helpers.GATES:
-                    gate = pygame.image.load(self._get_random_wall())
+                    gate = pygame.image.load(self._get_random_gate())
                     image.blit(gate, (x, y))
                     self.gates.append(pygame.Rect((x, y, plate_width, plate_height)))
+
+                elif cell == helpers.BIRTH:
+                    self.hero_position = (x, y)
+                    plate = pygame.image.load(self._get_random_plate())
+                    image.blit(plate, (x, y))
+
+                elif cell == helpers.ENEMY:
+                    self.enemies_spawnpoints.append((x, y))
+                    plate = pygame.image.load(self._get_random_plate())
+                    image.blit(plate, (x, y))
 
         return image
 
@@ -65,6 +78,15 @@ class Room(pygame.sprite.Sprite):
         walls = [f'{path}/{wall_filename}'
                   for wall_filename in os.listdir(path)]
         return walls
+
+    def _get_random_gate(self):
+        return choice(self._get_gates())
+
+    def _get_gates(self):
+        path = f'source/locations/{self.type}/gates'
+        gates = [f'{path}/{gate_filename}'
+                  for gate_filename in os.listdir(path)]
+        return gates
 
     def close_gates(self):
         self.walls.extend(self.gates)

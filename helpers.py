@@ -39,6 +39,7 @@ WALL  = 'W'
 FLOOR = ' '
 GATES = 'G'
 BIRTH = 'B'
+ENEMY = 'E'
 
 
 class RectList(list):

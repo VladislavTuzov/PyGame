@@ -10,14 +10,17 @@ from patterns import get_random_pattern
 def play_level(screen, cursor, hero, location='dungeon'):
     clock = pygame.time.Clock()
 
-    room = Room(get_random_pattern(), location)
-
     bullets = pygame.sprite.Group()
 
+
+    room = Room(get_random_pattern(), location)
+    hero.rect.center = room.hero_position
+
     enemies = helpers.RectGroup()
-    enemy = Dardo()
-    enemy.rect.center = (100, 100)
-    enemies.add(enemy)
+    for enemy_spawnpoint in room.enemies_spawnpoints:
+        enemy = Dardo()
+        enemy.rect.center = enemy_spawnpoint
+        enemies.add(enemy)
 
     mouse_pressed = False
     running = True

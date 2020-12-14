@@ -41,21 +41,25 @@ class Pattern:
         return new_wall
 
 
+def get_random_scheme():
+    return scheme
+
+
 def get_random_pattern():
     return pattern
 
 
-pattern = ('           WWWWW',
-           '               W',
-           '               W',
-           '               W',
-           '               G',
-           '               G',
-           '               G',
-           'W              G',
-           'W   W      W   W',
-           'W              W',
-           'WWWWGGGGGGGGWWWW',)
+pattern = ('WWWWWWWWWWWWWWWWWWWW',
+           'W                  W',
+           'W   E         E    W',
+           'W                  W',
+           'W       E          W',
+           'W                  W',
+           'W   E    B         W',
+           'W                  W',
+           'W             E    W',
+           'W                  W',
+           'WWWWWWWWWWWWWWWWWWWW',)
 
 
 spawn = ('WWWWWWWWW',
