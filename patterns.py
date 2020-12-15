@@ -1,3 +1,6 @@
+import helpers
+
+
 class Pattern:
     def __init__(self, pattern):
         self.pattern = list(pattern)
@@ -45,12 +48,13 @@ def get_random_scheme():
     return scheme
 
 
-def get_random_pattern():
-    return Pattern(pattern)
-
-
-def get_random_spawn():
-    return Pattern(spawn)
+def get_random_pattern(room_type):
+    if room_type == helpers.ROOM:
+        return Pattern(pattern)
+    elif room_type == helpers.SPAWN:
+        return Pattern(spawn)
+    elif room_type == helpers.PORTAL:
+        return Pattern(portal)
 
 
 pattern = ('WWWWWWWWWWWWWWWWWWWW',

@@ -1,6 +1,6 @@
 import pygame
 
-from config import FPS
+from config import FPS, SCREEN_SIZE
 from classes.generation import Level
 from classes.enemies import Dardo
 import helpers
@@ -9,7 +9,7 @@ import helpers
 def play_level(screen, cursor, hero, location='dungeon'):
     clock = pygame.time.Clock()
 
-    room = Level(location).current_room
+    room = Level(location, SCREEN_SIZE).current_room
     hero.rect.center = room.hero_position
 
     enemies = helpers.RectGroup()
@@ -75,6 +75,9 @@ def play_level(screen, cursor, hero, location='dungeon'):
 
         pygame.display.flip()
         clock.tick(FPS)
+
+        if room.hero_outside_room(hero):
+            pass
 
 
 def handle_movement(event):

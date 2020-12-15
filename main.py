@@ -13,8 +13,7 @@ from classes.exceptions import ExitPseudoError, NewGamePseudoError
 def main():
     pygame.init()
 
-    screen_size = 1366, 768
-    screen = pygame.display.set_mode(screen_size,
+    screen = pygame.display.set_mode(config.SCREEN_SIZE,
                                      flags=pygame.FULLSCREEN | pygame.HWSURFACE | pygame.SCALED)
     pygame.display.set_caption('Game')
 

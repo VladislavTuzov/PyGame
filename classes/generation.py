@@ -8,8 +8,9 @@ import patterns
 
 
 class Level:
-    def __init__(self, location):
+    def __init__(self, location, screen_size):
         self.location = location
+        self.screen_size = screen_size
         self.scheme = patterns.get_random_scheme()
         self._parse_scheme()
 
@@ -19,15 +20,12 @@ class Level:
         for i, row in enumerate(self.scheme):
             for j, cell in enumerate(row):
                 if cell in helpers.ROOMS:
+                    pattern = patterns.get_random_pattern(cell)
+                    self._add_gates(pattern, i, j)
+                    room = Room(pattern.pattern, self.location, self.screen_size)
+                    self.matrix[i][j] = room
                     if cell == helpers.SPAWN:
-                        pattern = patterns.get_random_spawn()
-                        self._add_gates(pattern, i, j)
-                        self.matrix[i][j] = Room(pattern.pattern, self.location)
                         self.current_room = self.matrix[i][j]
-                    elif cell == helpers.ROOM:
-                        pattern = patterns.get_random_pattern()
-                        self._add_gates(pattern, i, j)
-                        self.matrix[i][j] = Room(pattern.pattern, self.location)
                 elif cell in helpers.TUNNELS:
                     tunnel = Tunnel()
                     self.matrix[i][j] = tunnel
@@ -54,20 +52,30 @@ class Level:
 
 
 class Room:
-    def __init__(self, pattern, location):
+    def __init__(self, pattern, location, screen_size):
         self.width = len(pattern[0])
         self.height = len(pattern)
         self.location = location
+        self.screen_size = screen_size
 
         self.image = self._parse_pattern(pattern)
         self.rect = self.image.get_rect()
+        width, height = self.screen_size
+        self.rect.center = (width // 2, height // 2)
 
     def _parse_pattern(self, pattern):
         plate_size = get_image_size(get_random_plate(self.location))
         plate_width, plate_height = plate_size
+        screen_width, screen_height = self.screen_size
 
         image_width = self.width * plate_width
         image_height = self.height * plate_height
+
+        image_half_width = image_width // 2
+        image_half_height = image_height // 2
+
+        screen_center_x = screen_width // 2
+        screen_center_y = screen_height // 2
 
         self.walls = helpers.RectList()
         self.gates = helpers.RectList()
@@ -78,34 +86,47 @@ class Room:
         image = pygame.Surface((image_width, image_height))
         for i, row in enumerate(pattern):
             for j, cell in enumerate(row):
-                x = plate_width * j
-                y = plate_height * i
+                on_room_x = plate_width * j
+                on_room_y = plate_height * i
+                on_screen_x = screen_center_x - (image_half_width - on_room_x)
+                on_screen_y = screen_center_y - (image_half_height - on_room_y)
 
                 if cell == helpers.FLOOR:
                     plate = pygame.image.load(get_random_plate(self.location))
-                    image.blit(plate, (x, y))
+                    image.blit(plate, (on_room_x, on_room_y))
 
                 elif cell == helpers.WALL:
                     wall = pygame.image.load(get_random_wall(self.location))
-                    image.blit(wall, (x, y))
-                    self.walls.append(pygame.Rect((x, y, plate_width, plate_height)))
+                    image.blit(wall, (on_room_x, on_room_y))
+                    wall_rect = pygame.Rect((on_screen_x, on_screen_y,
+                                             plate_width, plate_height))
+                    self.walls.append(wall_rect)
 
                 elif cell == helpers.GATES:
                     gate = pygame.image.load(get_random_gate(self.location))
-                    image.blit(gate, (x, y))
-                    self.gates.append(pygame.Rect((x, y, plate_width, plate_height)))
+                    image.blit(gate, (on_room_x, on_room_y))
+                    gate_rect = pygame.Rect((on_screen_x, on_screen_y,
+                                             plate_width, plate_height))
+                    self.gates.append(gate_rect)
 
                 elif cell == helpers.BIRTH:
-                    self.hero_position = (x, y)
+                    self.hero_position = (on_screen_x, on_screen_y)
                     plate = pygame.image.load(get_random_plate(self.location))
-                    image.blit(plate, (x, y))
+                    image.blit(plate, (on_room_x, on_room_y))
 
                 elif cell == helpers.ENEMY:
-                    self.enemies_spawnpoints.append((x, y))
+                    self.enemies_spawnpoints.append((on_screen_x, on_screen_y))
                     plate = pygame.image.load(get_random_plate(self.location))
-                    image.blit(plate, (x, y))
+                    image.blit(plate, (on_room_x, on_room_y))
+
+                elif cell == helpers.PORTAL:
+                    plate = pygame.image.load(get_random_plate(self.location))
+                    image.blit(plate, (on_room_x, on_room_y))
 
         return image
+
+    def hero_outside_room(self, hero):
+        return False
 
     def close_gates(self):
         self.walls.extend(self.gates)
@@ -121,28 +142,33 @@ class Tunnel:
 def get_random_plate(location):
     return choice(get_plates(location))
 
+
 def get_plates(location):
     path = f'source/locations/{location}/floor'
     plates = [f'{path}/{plate_filename}'
               for plate_filename in os.listdir(path)]
     return plates
 
+
 def get_random_wall(location):
     return choice(get_walls(location))
+
 
 def get_walls(location):
     path = f'source/locations/{location}/walls'
     walls = [f'{path}/{wall_filename}'
-              for wall_filename in os.listdir(path)]
+             for wall_filename in os.listdir(path)]
     return walls
+
 
 def get_random_gate(location):
     return choice(get_gates(location))
 
+
 def get_gates(location):
     path = f'source/locations/{location}/gates'
     gates = [f'{path}/{gate_filename}'
-              for gate_filename in os.listdir(path)]
+             for gate_filename in os.listdir(path)]
     return gates
 
 
