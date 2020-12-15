@@ -3,16 +3,17 @@ from random import choice
 
 import pygame
 
+from config import SCREEN_WIDTH, SCREEN_HEIGHT
 import helpers
 import patterns
 
 
 class Level:
-    def __init__(self, location, screen_size):
+    def __init__(self, location):
         self.location = location
-        self.screen_size = screen_size
         self.scheme = patterns.get_random_scheme()
         self._parse_scheme()
+        self.current_position = [0, 0]  # will be changed by spawn and player
 
     def _parse_scheme(self):
         self.matrix = [[None for _ in range(len(self.scheme[0]))]
@@ -22,10 +23,11 @@ class Level:
                 if cell in helpers.ROOMS:
                     pattern = patterns.get_random_pattern(cell)
                     self._add_gates(pattern, i, j)
-                    room = Room(pattern.pattern, self.location, self.screen_size)
+                    room = Room(self, pattern.pattern, self.location)
                     self.matrix[i][j] = room
                     if cell == helpers.SPAWN:
                         self.current_room = self.matrix[i][j]
+                        self.current_position = [i, j]
                 elif cell in helpers.TUNNELS:
                     tunnel = Tunnel()
                     self.matrix[i][j] = tunnel
@@ -50,23 +52,25 @@ class Level:
                 except IndexError:
                     continue
 
+    def update_position(self, x_shift, y_shift):
+        self.current_position[0] += x_shift
+        self.current_position[1] += y_shift
+
 
 class Room:
-    def __init__(self, pattern, location, screen_size):
+    def __init__(self, level, pattern, location):
+        self.parent_level = level
         self.width = len(pattern[0])
         self.height = len(pattern)
         self.location = location
-        self.screen_size = screen_size
 
         self.image = self._parse_pattern(pattern)
         self.rect = self.image.get_rect()
-        width, height = self.screen_size
-        self.rect.center = (width // 2, height // 2)
+        self.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
 
     def _parse_pattern(self, pattern):
         plate_size = get_image_size(get_random_plate(self.location))
         plate_width, plate_height = plate_size
-        screen_width, screen_height = self.screen_size
 
         image_width = self.width * plate_width
         image_height = self.height * plate_height
@@ -74,8 +78,8 @@ class Room:
         image_half_width = image_width // 2
         image_half_height = image_height // 2
 
-        screen_center_x = screen_width // 2
-        screen_center_y = screen_height // 2
+        screen_center_x = SCREEN_WIDTH // 2
+        screen_center_y = SCREEN_HEIGHT // 2
 
         self.walls = helpers.RectList()
         self.gates = helpers.RectList()
@@ -126,6 +130,18 @@ class Room:
         return image
 
     def hero_outside_room(self, hero):
+        if hero.rect.x < self.rect.x:
+            self.parent_level.update_position(-1, 0)
+            return True
+        elif hero.rect.topright[0] > self.rect.topright[0]:
+            self.parent_level.update_position(+1, 0)
+            return True
+        elif hero.rect.y < self.rect.y:
+            self.parent_level.update_position(0, -1)
+            return True
+        elif hero.rect.bottomright[1] > self.rect.bottomright[1]:
+            self.parent_level.update_position(0, +1)
+            return True
         return False
 
     def close_gates(self):
