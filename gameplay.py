@@ -77,7 +77,7 @@ def play_level(screen, cursor, hero, location='dungeon'):
         pygame.display.flip()
         clock.tick(FPS)
 
-        if room.hero_outside_room(hero):
+        if room.is_hero_outside_room(hero):
             room = level.current_room
 
 

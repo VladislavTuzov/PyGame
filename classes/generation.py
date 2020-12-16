@@ -52,14 +52,53 @@ class Level:
                 except IndexError:
                     continue
 
-    def update_position(self, x_shift, y_shift):
+    def update_position(self, x_shift, y_shift, hero):
         self.current_position[0] += x_shift
         self.current_position[1] += y_shift
         i, j = self.current_position
         self.current_room = self.matrix[j][i]
+        if x_shift == +1:
+            self.current_room.place_hero(hero, 'left')
+        elif x_shift == -1:
+            self.current_room.place_hero(hero, 'right')
+        elif y_shift == +1:
+            self.current_room.place_hero(hero, 'top')
+        elif y_shift == -1:
+            self.current_room.place_hero(hero, 'bottom')
 
 
-class Room:
+class Location:
+    def is_hero_outside_room(self, hero):
+        if hero.rect.x < self.rect.x:
+            self.parent_level.update_position(-1, 0, hero)
+            return True
+        elif hero.rect.topright[0] > self.rect.topright[0]:
+            self.parent_level.update_position(+1, 0, hero)
+            return True
+        elif hero.rect.y < self.rect.y:
+            self.parent_level.update_position(0, -1, hero)
+            return True
+        elif hero.rect.bottomright[1] > self.rect.bottomright[1]:
+            self.parent_level.update_position(0, +1, hero)
+            return True
+        return False
+
+    def place_hero(self, hero, direction):
+        if direction == 'left':
+            hero.rect.midleft = self.rect.midleft
+            hero.rect.x += 10
+        elif direction == 'right':
+            hero.rect.midright = self.rect.midright
+            hero.rect.x -= 10
+        elif direction == 'top':
+            hero.rect.midtop = self.rect.midtop
+            hero.rect.y += 10
+        elif direction == 'bottom':
+            hero.rect.midbottom = self.rect.midbottom
+            hero.rect.y += 10
+
+
+class Room(Location):
     def __init__(self, level, pattern, location):
         self.parent_level = level
         self.width = len(pattern[0])
@@ -131,21 +170,6 @@ class Room:
 
         return image
 
-    def hero_outside_room(self, hero):
-        if hero.rect.x < self.rect.x:
-            self.parent_level.update_position(-1, 0)
-            return True
-        elif hero.rect.topright[0] > self.rect.topright[0]:
-            self.parent_level.update_position(+1, 0)
-            return True
-        elif hero.rect.y < self.rect.y:
-            self.parent_level.update_position(0, -1)
-            return True
-        elif hero.rect.bottomright[1] > self.rect.bottomright[1]:
-            self.parent_level.update_position(0, +1)
-            return True
-        return False
-
     def close_gates(self):
         self.walls.extend(self.gates)
 
@@ -153,7 +177,7 @@ class Room:
         self.walls[:] = [wall for wall in self.walls if wall not in self.gates]
 
 
-class Tunnel:
+class Tunnel(Location):
     def __init__(self, level, location, direction):
         self.parent_level = level
         self.location = location
@@ -175,7 +199,7 @@ class Tunnel:
 
         self.walls = helpers.RectList()
 
-        for i in range(SCREEN_WIDTH // plate_width):
+        for i in range(SCREEN_WIDTH // plate_width + 1):
             for j in range(5):
                 on_room_x = plate_width * i
                 on_room_y = plate_height * j
@@ -191,21 +215,6 @@ class Tunnel:
                     self.walls.append(wall_rect)
 
         return image
-
-    def hero_outside_room(self, hero):
-        if hero.rect.x < self.rect.x:
-            self.parent_level.update_position(-1, 0)
-            return True
-        elif hero.rect.topright[0] > self.rect.topright[0]:
-            self.parent_level.update_position(+1, 0)
-            return True
-        elif hero.rect.y < self.rect.y:
-            self.parent_level.update_position(0, -1)
-            return True
-        elif hero.rect.bottomright[1] > self.rect.bottomright[1]:
-            self.parent_level.update_position(0, +1)
-            return True
-        return False
 
 
 def get_random_plate(location):
