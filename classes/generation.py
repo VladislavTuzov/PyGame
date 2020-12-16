@@ -12,8 +12,8 @@ class Level:
     def __init__(self, location):
         self.location = location
         self.scheme = patterns.get_random_scheme()
-        self._parse_scheme()
         self.current_position = [0, 0]  # will be changed by spawn and player
+        self._parse_scheme()
 
     def _parse_scheme(self):
         self.matrix = [[None for _ in range(len(self.scheme[0]))]
@@ -29,7 +29,7 @@ class Level:
                         self.current_room = self.matrix[i][j]
                         self.current_position = [i, j]
                 elif cell in helpers.TUNNELS:
-                    tunnel = Tunnel()
+                    tunnel = Tunnel(self, self.location, cell)
                     self.matrix[i][j] = tunnel
                 else:
                     continue
@@ -55,6 +55,8 @@ class Level:
     def update_position(self, x_shift, y_shift):
         self.current_position[0] += x_shift
         self.current_position[1] += y_shift
+        i, j = self.current_position
+        self.current_room = self.matrix[j][i]
 
 
 class Room:
@@ -152,7 +154,58 @@ class Room:
 
 
 class Tunnel:
-    pass
+    def __init__(self, level, location, direction):
+        self.parent_level = level
+        self.location = location
+        if direction == helpers.H_TUNN:
+            self.image = self._create_horizontal()
+            self.rect = self.image.get_rect()
+            self.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+
+    def _create_horizontal(self):
+        plate_size = get_image_size(get_random_plate(self.location))
+        plate_width, plate_height = plate_size
+
+        image_width = SCREEN_WIDTH
+        image_height = 5 * plate_height
+
+        image = pygame.Surface((image_width, image_height))
+        image_center = (image_width // 2, image_height // 2)
+        image_center_x, image_center_y = image_center
+
+        self.walls = helpers.RectList()
+
+        for i in range(SCREEN_WIDTH // plate_width):
+            for j in range(5):
+                on_room_x = plate_width * i
+                on_room_y = plate_height * j
+                on_screen_x = SCREEN_WIDTH // 2 - (image_center_x - on_room_x)
+                on_screen_y = SCREEN_HEIGHT // 2 - (image_center_y - on_room_y)
+
+                tile = pygame.image.load(get_random_plate(self.location))
+                image.blit(tile, (on_room_x, on_room_y))
+
+                if j == 0 or j == 4:
+                    wall_rect = pygame.Rect((on_screen_x, on_screen_y,
+                                             plate_width, plate_height))
+                    self.walls.append(wall_rect)
+
+        return image
+
+    def hero_outside_room(self, hero):
+        if hero.rect.x < self.rect.x:
+            self.parent_level.update_position(-1, 0)
+            return True
+        elif hero.rect.topright[0] > self.rect.topright[0]:
+            self.parent_level.update_position(+1, 0)
+            return True
+        elif hero.rect.y < self.rect.y:
+            self.parent_level.update_position(0, -1)
+            return True
+        elif hero.rect.bottomright[1] > self.rect.bottomright[1]:
+            self.parent_level.update_position(0, +1)
+            return True
+        return False
 
 
 def get_random_plate(location):

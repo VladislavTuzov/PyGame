@@ -18,7 +18,7 @@ def play_level(screen, cursor, hero, location='dungeon'):
         enemy = Dardo()
         enemy.rect.center = enemy_spawnpoint
         enemies.add(enemy)
-    
+
     bullets = pygame.sprite.Group()
 
     mouse_pressed = False
