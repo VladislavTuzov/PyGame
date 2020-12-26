@@ -211,14 +211,18 @@ class Tunnel(Location):
                 on_screen_x = SCREEN_WIDTH // 2 - (image_center_x - on_room_x)
                 on_screen_y = SCREEN_HEIGHT // 2 - (image_center_y - on_room_y)
 
-                tile = pygame.image.load(get_random_plate(self.location))
-                image.blit(tile, (on_room_x, on_room_y))
-
                 if j == 0 or j == tunnel_height - 1:
+                    wall = pygame.image.load(get_random_wall(self.location))
+                    image.blit(wall, (on_room_x, on_room_y))
+
                     wall_rect = pygame.Rect(
                         (on_screen_x, on_screen_y, plate_width, plate_height)
                     )
                     self.walls.append(wall_rect)
+
+                else:
+                    tile = pygame.image.load(get_random_plate(self.location))
+                    image.blit(tile, (on_room_x, on_room_y))
 
         return image
 
@@ -243,14 +247,18 @@ class Tunnel(Location):
                 on_screen_x = SCREEN_WIDTH // 2 - (image_center_x - on_room_x)
                 on_screen_y = SCREEN_HEIGHT // 2 - (image_center_y - on_room_y)
 
-                tile = pygame.image.load(get_random_plate(self.location))
-                image.blit(tile, (on_room_x, on_room_y))
-
                 if i == 0 or i == tunnel_width - 1:
+                    wall = pygame.image.load(get_random_wall(self.location))
+                    image.blit(wall, (on_room_x, on_room_y))
+
                     wall_rect = pygame.Rect(
                         (on_screen_x, on_screen_y, plate_width, plate_height)
                     )
                     self.walls.append(wall_rect)
+
+                else:
+                    tile = pygame.image.load(get_random_plate(self.location))
+                    image.blit(tile, (on_room_x, on_room_y))
 
         return image
 
