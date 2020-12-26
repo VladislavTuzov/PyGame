@@ -95,7 +95,7 @@ class Location:
             hero.rect.y += 10
         elif direction == 'bottom':
             hero.rect.midbottom = self.rect.midbottom
-            hero.rect.y += 10
+            hero.rect.y -= 10
 
 
 class Room(Location):
@@ -181,17 +181,22 @@ class Tunnel(Location):
     def __init__(self, level, location, direction):
         self.parent_level = level
         self.location = location
+
         if direction == helpers.H_TUNN:
             self.image = self._create_horizontal()
-            self.rect = self.image.get_rect()
-            self.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        elif direction == helpers.V_TUNN:
+            self.image = self._create_vertical()
+
+        self.rect = self.image.get_rect()
+        self.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
 
     def _create_horizontal(self):
         plate_size = get_image_size(get_random_plate(self.location))
         plate_width, plate_height = plate_size
+        tunnel_height = 7
 
         image_width = SCREEN_WIDTH
-        image_height = 5 * plate_height
+        image_height = tunnel_height * plate_height
 
         image = pygame.Surface((image_width, image_height))
         image_center = (image_width // 2, image_height // 2)
@@ -200,7 +205,7 @@ class Tunnel(Location):
         self.walls = helpers.RectList()
 
         for i in range(SCREEN_WIDTH // plate_width + 1):
-            for j in range(5):
+            for j in range(tunnel_height):
                 on_room_x = plate_width * i
                 on_room_y = plate_height * j
                 on_screen_x = SCREEN_WIDTH // 2 - (image_center_x - on_room_x)
@@ -209,9 +214,42 @@ class Tunnel(Location):
                 tile = pygame.image.load(get_random_plate(self.location))
                 image.blit(tile, (on_room_x, on_room_y))
 
-                if j == 0 or j == 4:
-                    wall_rect = pygame.Rect((on_screen_x, on_screen_y,
-                                             plate_width, plate_height))
+                if j == 0 or j == tunnel_height - 1:
+                    wall_rect = pygame.Rect(
+                        (on_screen_x, on_screen_y, plate_width, plate_height)
+                    )
+                    self.walls.append(wall_rect)
+
+        return image
+
+    def _create_vertical(self):
+        plate_size = get_image_size(get_random_plate(self.location))
+        plate_width, plate_height = plate_size
+        tunnel_width = 7
+
+        image_width = tunnel_width * plate_height
+        image_height = SCREEN_HEIGHT
+
+        image = pygame.Surface((image_width, image_height))
+        image_center = (image_width // 2, image_height // 2)
+        image_center_x, image_center_y = image_center
+
+        self.walls = helpers.RectList()
+
+        for i in range(tunnel_width):
+            for j in range(SCREEN_HEIGHT // plate_height + 1):
+                on_room_x = plate_width * i
+                on_room_y = plate_height * j
+                on_screen_x = SCREEN_WIDTH // 2 - (image_center_x - on_room_x)
+                on_screen_y = SCREEN_HEIGHT // 2 - (image_center_y - on_room_y)
+
+                tile = pygame.image.load(get_random_plate(self.location))
+                image.blit(tile, (on_room_x, on_room_y))
+
+                if i == 0 or i == tunnel_width - 1:
+                    wall_rect = pygame.Rect(
+                        (on_screen_x, on_screen_y, plate_width, plate_height)
+                    )
                     self.walls.append(wall_rect)
 
         return image

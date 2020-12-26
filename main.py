@@ -14,7 +14,7 @@ def main():
     pygame.init()
 
     screen = pygame.display.set_mode(config.SCREEN_SIZE,
-                                     flags=pygame.FULLSCREEN | pygame.HWSURFACE | pygame.SCALED)
+                flags=pygame.FULLSCREEN | pygame.HWSURFACE | pygame.SCALED)
     pygame.display.set_caption('Game')
 
     pygame.mouse.set_visible(False)
