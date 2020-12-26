@@ -1,4 +1,8 @@
+from math import hypot
+
 import pygame
+
+from config import FPS
 
 
 class BaseEnemy(pygame.sprite.Sprite):
@@ -8,11 +12,24 @@ class BaseEnemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         self.hp = hp
+        self.speed = 180 / FPS
 
     def hit(self, bullet):
         self.hp -= bullet.damage
         if self.hp <= 0:
             self.kill()
+
+    def update(self, hero):
+        x0, y0 = self.rect.center
+        x1, y1 = hero.rect.center
+
+        x_dist = x1 - x0
+        y_dist = y1 - y0
+        dist = hypot(x_dist, y_dist)
+        if dist >= 50:
+            coeff = self.speed / dist
+            self.rect.x += x_dist * coeff
+            self.rect.y += y_dist * coeff
 
 
 class Dardo(BaseEnemy):

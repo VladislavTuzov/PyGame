@@ -68,20 +68,18 @@ class Level:
 
 
 class Location:
+    enemies_spawnpoints = []
+    
     def is_hero_outside_room(self, hero):
         if hero.rect.x < self.rect.x:
-            self.parent_level.update_position(-1, 0, hero)
-            return True
+            return True, (-1, 0)
         elif hero.rect.topright[0] > self.rect.topright[0]:
-            self.parent_level.update_position(+1, 0, hero)
-            return True
+            return True, (+1, 0)
         elif hero.rect.y < self.rect.y:
-            self.parent_level.update_position(0, -1, hero)
-            return True
+            return True, (0, -1)
         elif hero.rect.bottomright[1] > self.rect.bottomright[1]:
-            self.parent_level.update_position(0, +1, hero)
-            return True
-        return False
+            return True, (0, +1)
+        return False, None
 
     def place_hero(self, hero, direction):
         if direction == 'left':

@@ -7,11 +7,20 @@ import helpers
 
 
 def play_level(screen, cursor, hero, location='dungeon'):
-    clock = pygame.time.Clock()
-
     level = Level(location)
     room = level.current_room
     hero.rect.center = room.hero_position
+    while True:
+        direction = play_room(screen, cursor, hero, room)
+        if direction is not None:
+            level.update_position(*direction, hero)
+            room = level.current_room
+        else:
+            return
+
+
+def play_room(screen, cursor, hero, room):
+    clock = pygame.time.Clock()
 
     enemies = helpers.RectGroup()
     for enemy_spawnpoint in room.enemies_spawnpoints:
@@ -65,7 +74,7 @@ def play_level(screen, cursor, hero, location='dungeon'):
         bullets.update(room.walls, enemies)
         bullets.draw(screen)
 
-        enemies.update()
+        enemies.update(hero)
         enemies.draw(screen)
 
         blit_cursor(screen, cursor)
@@ -73,8 +82,9 @@ def play_level(screen, cursor, hero, location='dungeon'):
         pygame.display.flip()
         clock.tick(FPS)
 
-        if room.is_hero_outside_room(hero):
-            room = level.current_room
+        is_outside, direction = room.is_hero_outside_room(hero)
+        if is_outside:
+            return direction
 
 
 def blit_cursor(screen, cursor):
