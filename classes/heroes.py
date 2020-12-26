@@ -9,8 +9,10 @@ class BaseHero(pygame.sprite.Sprite):
     def __init__(self, hero_name, hp, protection, weapon_limit=2):
         super().__init__()
         # pygame attributes
-        self.image_left = pygame.image.load(f'source/heroes/{hero_name}/default_left.png')
-        self.image_right = pygame.image.load(f'source/heroes/{hero_name}/default_right.png')
+        self.image_left = pygame.image.load(
+            f'source/heroes/{hero_name}/default_left.png'
+        )
+        self.image_right = pygame.transform.flip(self.image_left, True, False)
 
         self.image = self.image_left  # by default, then will be changed by direction
         self.rect = self.image.get_rect()

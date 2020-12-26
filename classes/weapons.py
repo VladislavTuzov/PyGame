@@ -9,8 +9,10 @@ from config import FPS
 class BaseWeapon(pygame.sprite.Sprite):
     def __init__(self, weapon_name, damage, cooldown):
         super().__init__()
-        self.image_left = pygame.image.load(f'source/weapons/{weapon_name}/left.png')
-        self.image_right = pygame.image.load(f'source/weapons/{weapon_name}/right.png')
+        self.image_left = pygame.image.load(
+            f'source/weapons/{weapon_name}/left.png'
+        )
+        self.image_right = pygame.transform.flip(self.image_left, True, False)
         self.image = self.image_left  # by default, then will be change by direction
         self.rect = self.image.get_rect()
 
