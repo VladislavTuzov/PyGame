@@ -45,40 +45,41 @@ def play_level(screen, cursor, hero, location='dungeon'):
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pressed = True
                 pos = event.pos
-                bullet = hero.shoot(pos)
-                if bullet:
-                    bullets.add(bullet)
+                bullet = hero.shoot(pos, bullets)
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 mouse_pressed = False
 
-        hero.move(room.walls)
         if mouse_pressed:
             pos = pygame.mouse.get_pos()
-            bullet = hero.shoot(pos)
-            if bullet:
-                bullets.add(bullet)
+            hero.shoot(pos, bullets)
 
         screen.fill('black')
 
         screen.blit(room.image, room.rect)
+
+        hero.move(room.walls)
         screen.blit(hero.image, hero.rect)
         screen.blit(hero.weapon.image, hero.weapon.rect)
-
-        enemies.update()
-        enemies.draw(screen)
 
         bullets.update(room.walls, enemies)
         bullets.draw(screen)
 
-        cursor.update_pos(pygame.mouse.get_pos())
-        screen.blit(cursor.image, cursor.rect)
+        enemies.update()
+        enemies.draw(screen)
+
+        blit_cursor(screen, cursor)
 
         pygame.display.flip()
         clock.tick(FPS)
 
         if room.is_hero_outside_room(hero):
             room = level.current_room
+
+
+def blit_cursor(screen, cursor):
+    cursor.update_pos(pygame.mouse.get_pos())
+    screen.blit(cursor.image, cursor.rect)
 
 
 def handle_movement(event):

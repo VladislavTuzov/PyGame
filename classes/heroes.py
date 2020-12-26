@@ -44,7 +44,6 @@ class BaseHero(pygame.sprite.Sprite):
         y = self.rect.centery + self.direction[1] * self.speed
 
         prev_center = self.rect.center
-        # self.rect.center = (x, y)
         self.rect.centerx = x
         if walls.colliderect(self.rect):
             self.rect.center = prev_center
@@ -56,9 +55,10 @@ class BaseHero(pygame.sprite.Sprite):
 
         self.weapon.rect.center = (self.rect.centerx, self.rect.centery + 10)
 
-    def shoot(self, pos):
+    def shoot(self, pos, bullets):
         bullet = self.weapon.shoot(pos)
-        return bullet
+        if bullet:
+            bullets.add(bullet)
 
     @property
     def weapon(self):
