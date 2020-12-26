@@ -63,6 +63,9 @@ def play_room(screen, cursor, hero, room):
             pos = pygame.mouse.get_pos()
             hero.shoot(pos, bullets)
 
+        if not enemies:
+            room.delete_enemies_spawns()
+
         screen.fill('black')
 
         screen.blit(room.image, room.rect)

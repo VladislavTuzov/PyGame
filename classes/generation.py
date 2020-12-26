@@ -141,15 +141,17 @@ class Room(Location):
                 elif cell == helpers.WALL:
                     wall = pygame.image.load(get_random_wall(self.location))
                     image.blit(wall, (on_room_x, on_room_y))
-                    wall_rect = pygame.Rect((on_screen_x, on_screen_y,
-                                             plate_width, plate_height))
+                    wall_rect = pygame.Rect(
+                        (on_screen_x, on_screen_y, plate_width, plate_height)
+                    )
                     self.walls.append(wall_rect)
 
                 elif cell == helpers.GATES:
                     gate = pygame.image.load(get_random_gate(self.location))
                     image.blit(gate, (on_room_x, on_room_y))
-                    gate_rect = pygame.Rect((on_screen_x, on_screen_y,
-                                             plate_width, plate_height))
+                    gate_rect = pygame.Rect(
+                        (on_screen_x, on_screen_y, plate_width, plate_height)
+                    )
                     self.gates.append(gate_rect)
 
                 elif cell == helpers.BIRTH:
@@ -173,6 +175,9 @@ class Room(Location):
 
     def open_gates(self):
         self.walls[:] = [wall for wall in self.walls if wall not in self.gates]
+
+    def delete_enemies_spawns(self):
+        self.enemies_spawnpoints.clear()
 
 
 class Tunnel(Location):
@@ -259,6 +264,9 @@ class Tunnel(Location):
                     image.blit(tile, (on_room_x, on_room_y))
 
         return image
+
+    def delete_enemies_spawns(self):
+        """Isn't used anywhere, only for escape errors with same room method"""
 
 
 def get_random_plate(location):
