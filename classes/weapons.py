@@ -120,7 +120,7 @@ class AWP(BaseWeapon):
                         self.weapon_name,
                         self.rect.center,
                         pos,
-                        speed=420,
+                        speed=900,
                         damage=self.damage
                    )
 
