@@ -17,7 +17,7 @@ class BaseHero(pygame.sprite.Sprite):
         self.image = self.image_left  # by default, then will be changed by direction
         self.rect = self.image.get_rect()
 
-        self.speed = 180 / FPS  # pixels per second
+        self.speed = 240 / FPS  # pixels per second
         self.direction = [0, 0]
 
         self.x_direction = 0  # help us to rotate weapon when scrolling
