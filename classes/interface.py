@@ -7,8 +7,7 @@ class MenuButton(pygame.sprite.Sprite):
         self.image = pygame.image.load(f'source/buttons/{button_name}.png')
         self.rect = self.image.get_rect()
 
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.center = (x, y)
 
     def collidepoint(self, coords):
         return self.rect.collidepoint(coords)

@@ -1,9 +1,13 @@
-import pygame
+from io import BytesIO
 
-from config import FPS
+import pygame
+from PIL import Image, ImageFilter
+
+from config import FPS, SCREEN_SIZE, SCREEN_CENTER
 from classes.generation import Level
 from classes.enemies import Dardo
 from classes.exceptions import PortalInteractPseudoError
+from classes.interface import MenuButton
 import helpers
 
 
@@ -41,7 +45,7 @@ def play_room(screen, cursor, hero, room):
         for event in pygame.event.get():
             if (event.type == pygame.QUIT
                     or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                running = False
+                running = escape_menu(screen, cursor)
 
             elif event.type == pygame.KEYDOWN:
                 if event.key in helpers.MOVEMENT_KEYS:
@@ -114,3 +118,39 @@ def handle_movement(event):
     elif event.key == helpers.RIGHT:
         x_shift, y_shift = +1, 0
     return x_shift, y_shift
+
+
+def escape_menu(screen, cursor):
+    blurred_screen = blur_screen(screen)
+    home_button = MenuButton("home", *SCREEN_CENTER)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = event.pos
+                if home_button.collidepoint(pos):
+                    return False
+                return True
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return True
+
+        screen.blit(blurred_screen, (0, 0))
+        screen.blit(home_button.image, home_button.rect)
+        blit_cursor(screen, cursor)
+
+        pygame.display.flip()
+
+
+def blur_screen(screen):
+    string = pygame.image.tostring(screen, "RGB")
+    image = Image.frombytes("RGB", SCREEN_SIZE, string, "raw")\
+                 .filter(ImageFilter.GaussianBlur(radius=4))
+    image.seek(0)
+
+    blurred_image = BytesIO()
+    image.save(blurred_image, "PNG")
+    blurred_image.seek(0)
+
+    blurred_image = pygame.image.load(blurred_image)
+    return blurred_image
