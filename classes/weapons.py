@@ -3,16 +3,17 @@ from time import time
 
 import pygame
 
-from config import FPS
+from config import FPS, SOUND_VOLUME
 
 
 class BaseWeapon(pygame.sprite.Sprite):
     def __init__(self, weapon_name, damage, cooldown):
         super().__init__()
+
         self.image_left = pygame.image.load(
-            f'source/weapons/{weapon_name}/left.png'
-        )
+            f'source/weapons/{weapon_name}/left.png')
         self.image_right = pygame.transform.flip(self.image_left, True, False)
+
         self.image = self.image_left  # by default, then will be change by direction
         self.rect = self.image.get_rect()
 
@@ -26,31 +27,43 @@ class BaseWeapon(pygame.sprite.Sprite):
         if shot_time - self.previous_shot_time >= self.cooldown:
             self.previous_shot_time = shot_time
             return BaseBullet(
-                        self.weapon_name,
-                        self.rect.center,
-                        pos,
-                        speed=420,
-                        damage=self.damage
-                   )
+                self.weapon_name,
+                self.rect.center,
+                pos,
+                speed=420,
+                damage=self.damage
+            )
 
 
 class BaseBullet(pygame.sprite.Sprite):
     def __init__(self, weapon_name, start, pos, speed, damage, max_distance=2000):
         super().__init__()
-        self.image = pygame.image.load(f'source/weapons/{weapon_name}/bullet.png')
+
+        # pygame attributes
+        self.image = pygame.image.load(
+            f'source/weapons/{weapon_name}/bullet.png')
         self.rect = self.image.get_rect()
         self.rect.center = start
 
+        # game attributes
         self.speed = speed / FPS  # pixels by second
         self.damage = damage
         self.max_distance = max_distance
 
+        # attributes for flight calcutations
+        self.current_distance = 0
         self.x0, self.y0 = start
         x1, y1 = pos
-        self.current_distance = 0
         self.x_distance = x1 - self.x0
         self.y_distance = y1 - self.y0
         self.target_distance = hypot(self.x_distance, self.y_distance)
+
+        # play sound because when bullet initializes
+        # it means that we shoot
+        self.sound = pygame.mixer.Sound(
+            f'source/weapons/{weapon_name}/shot.wav')
+        self.sound.set_volume(SOUND_VOLUME)
+        self.sound.play()
 
     def update(self, walls, enemies):
         self.current_distance += self.speed
