@@ -3,6 +3,7 @@ import pygame
 from config import FPS
 from classes.generation import Level
 from classes.enemies import Dardo
+from classes.exceptions import PortalInteractPseudoError
 import helpers
 
 
@@ -11,11 +12,14 @@ def play_level(screen, cursor, hero, location='dungeon'):
     room = level.current_room
     hero.rect.center = room.hero_position
     while True:
-        direction = play_room(screen, cursor, hero, room)
-        if direction is not None:
-            level.update_position(*direction, hero)
-            room = level.current_room
-        else:
+        try:
+            direction = play_room(screen, cursor, hero, room)
+            if direction is not None:
+                level.update_position(*direction, hero)
+                room = level.current_room
+            else:
+                return
+        except PortalInteractPseudoError:
             return
 
 
@@ -45,6 +49,8 @@ def play_room(screen, cursor, hero, room):
                     hero.change_direction(x_shift, y_shift)
                 elif event.key == helpers.WEAPON_SCROLL:
                     hero.scroll()
+                elif event.key == helpers.INTERACTION:
+                    room.other_sprites.interact(hero)
 
             elif event.type == pygame.KEYUP:
                 if event.key in helpers.MOVEMENT_KEYS:

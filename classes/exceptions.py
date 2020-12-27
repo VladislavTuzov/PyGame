@@ -4,3 +4,7 @@ class ExitPseudoError(Exception):
 
 class NewGamePseudoError(Exception):
     pass
+
+
+class PortalInteractPseudoError(Exception):
+	pass

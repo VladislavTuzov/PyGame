@@ -5,6 +5,7 @@ from random import choice
 import pygame
 
 from config import SCREEN_WIDTH, SCREEN_HEIGHT
+from .exceptions import PortalInteractPseudoError
 import helpers
 import patterns
 
@@ -70,7 +71,7 @@ class Level:
 
 class Location:
     enemies_spawnpoints = []
-    other_sprites = helpers.RectGroup()
+    other_sprites = helpers.InteractionGroup()
     
     def is_hero_outside_room(self, hero):
         if hero.rect.x < self.rect.x:
@@ -123,7 +124,7 @@ class Room(Location):
 
         self.walls = helpers.RectList()
         self.gates = helpers.RectList()
-        self.other_sprites = helpers.RectGroup()
+        self.other_sprites = helpers.InteractionGroup()
 
         self.hero_position = (0, 0)
         self.enemies_spawnpoints = []
@@ -341,3 +342,7 @@ class Portal(pygame.sprite.Sprite):
     def update(self):
         self.frames.rotate()
         self.image = self.frames[0]
+
+    def interact(self, hero):
+        if self.rect.colliderect(hero.rect):
+            raise PortalInteractPseudoError('go to another level')
