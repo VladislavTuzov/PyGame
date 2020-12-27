@@ -59,13 +59,13 @@ def get_random_pattern(room_type):
 
 pattern = ('WWWWWWWWWWWWWWWWWWWW',
            'W                  W',
-           'W   E         E    W',
            'W                  W',
-           'W       E          W',
+           'W   EEEEEEEEEEEE   W',
+           'W   EEEEEEEEEEEE   W',
+           'W   EEEEEEEEEEEE   W',
+           'W   EEEEEEEEEEEE   W',
+           'W   EEEEEEEEEEEE   W',
            'W                  W',
-           'W   E    B         W',
-           'W                  W',
-           'W             E    W',
            'W                  W',
            'WWWWWWWWWWWWWWWWWWWW',)
 

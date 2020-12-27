@@ -1,6 +1,6 @@
 from collections import deque
 import os
-from random import choice
+from random import choice, sample
 
 import pygame
 
@@ -174,7 +174,13 @@ class Room(Location):
                     portal = Portal(screen_center_x, screen_center_y)
                     self.other_sprites.add(portal)
 
+        self.randomize_enemies_spawns()
+
         return image
+
+    def randomize_enemies_spawns(self):
+        if self.enemies_spawnpoints:
+            self.enemies_spawnpoints = sample(self.enemies_spawnpoints, 5)
 
     def close_gates(self):
         self.walls.extend(self.gates)
