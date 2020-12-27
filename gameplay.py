@@ -45,7 +45,7 @@ def play_room(screen, cursor, hero, room):
         for event in pygame.event.get():
             if (event.type == pygame.QUIT
                     or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                running = escape_menu(screen, cursor)
+                running = escape_menu(screen, hero, cursor)
 
             elif event.type == pygame.KEYDOWN:
                 if event.key in helpers.MOVEMENT_KEYS:
@@ -120,7 +120,7 @@ def handle_movement(event):
     return x_shift, y_shift
 
 
-def escape_menu(screen, cursor):
+def escape_menu(screen, hero, cursor):
     blurred_screen = blur_screen(screen)
     home_button = MenuButton("home", *SCREEN_CENTER)
 
@@ -134,6 +134,13 @@ def escape_menu(screen, cursor):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return True
+                elif event.key in helpers.MOVEMENT_KEYS:
+                    x_shift, y_shift = handle_movement(event)
+                    hero.change_direction(x_shift, y_shift)
+            elif event.type == pygame.KEYUP:
+                if event.key in helpers.MOVEMENT_KEYS:
+                    x_shift, y_shift = handle_movement(event)
+                    hero.change_direction(-x_shift, -y_shift)
 
         screen.blit(blurred_screen, (0, 0))
         screen.blit(home_button.image, home_button.rect)
