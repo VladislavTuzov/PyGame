@@ -76,7 +76,7 @@ class BaseBullet(pygame.sprite.Sprite):
 
 class Broom(BaseWeapon):
     def __init__(self):
-        super().__init__('broom', 1, 0.2)
+        super().__init__('broom', damage=1, cooldown=0.2)
 
     def shoot(self, pos):
         shot_time = time()
@@ -92,4 +92,25 @@ class Broom(BaseWeapon):
 
 
 class BroomBullet(BaseBullet):
+    pass
+
+
+class AWP(BaseWeapon):
+    def __init__(self):
+        super().__init__('awp', damage=5, cooldown=2)
+
+    def shoot(self, pos):
+        shot_time = time()
+        if shot_time - self.previous_shot_time >= self.cooldown:
+            self.previous_shot_time = shot_time
+            return AWPBullet(
+                        self.weapon_name,
+                        self.rect.center,
+                        pos,
+                        speed=420,
+                        damage=self.damage
+                   )
+
+
+class AWPBullet(BaseBullet):
     pass

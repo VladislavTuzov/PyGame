@@ -5,7 +5,7 @@ import menu
 
 import config
 from classes.heroes import Knight
-from classes.weapons import BaseWeapon, Broom
+from classes.weapons import *
 from classes.interface import CustomCursor
 from classes.exceptions import ExitPseudoError, NewGamePseudoError
 
@@ -18,7 +18,7 @@ def main():
     pygame.display.set_caption('Game')
 
     hero = Knight()
-    hero.add_weapon(BaseWeapon('awp', damage=5, cooldown=2))
+    hero.add_weapon(AWP())
     hero.add_weapon(Broom())
 
     try:
