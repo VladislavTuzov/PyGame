@@ -1,3 +1,4 @@
+from collections import deque
 import os
 from random import choice
 
@@ -23,7 +24,7 @@ class Level:
                 if cell in helpers.ROOMS:
                     pattern = patterns.get_random_pattern(cell)
                     self._add_gates(pattern, i, j)
-                    room = Room(self, pattern.pattern, self.location)
+                    room = Room(pattern.pattern, self.location)
                     self.matrix[i][j] = room
                     if cell == helpers.SPAWN:
                         self.current_room = self.matrix[i][j]
@@ -69,6 +70,7 @@ class Level:
 
 class Location:
     enemies_spawnpoints = []
+    other_sprites = helpers.RectGroup()
     
     def is_hero_outside_room(self, hero):
         if hero.rect.x < self.rect.x:
@@ -97,8 +99,7 @@ class Location:
 
 
 class Room(Location):
-    def __init__(self, level, pattern, location):
-        self.parent_level = level
+    def __init__(self, pattern, location):
         self.width = len(pattern[0])
         self.height = len(pattern)
         self.location = location
@@ -122,6 +123,7 @@ class Room(Location):
 
         self.walls = helpers.RectList()
         self.gates = helpers.RectList()
+        self.other_sprites = helpers.RectGroup()
 
         self.hero_position = (0, 0)
         self.enemies_spawnpoints = []
@@ -167,6 +169,9 @@ class Room(Location):
                 elif cell == helpers.PORTAL:
                     plate = pygame.image.load(get_random_plate(self.location))
                     image.blit(plate, (on_room_x, on_room_y))
+
+                    portal = Portal(screen_center_x, screen_center_y)
+                    self.other_sprites.add(portal)
 
         return image
 
@@ -308,3 +313,31 @@ def get_image_size(path):
         width = int(data[16:20].hex(), 16)
         height = int(data[20:24].hex(), 16)
     return width, height
+
+
+
+class Portal(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+
+        self.frames = deque()
+        self.cut_sheet(9, 1)
+        self.image = self.frames[0]
+        self.rect.center = (x, y)
+
+    def cut_sheet(self, cols, rows):
+        sheet = pygame.image.load('source/locations/portal.png')
+        self.rect = pygame.Rect(
+            0, 0, sheet.get_width() // cols, sheet.get_height() // rows
+        )
+        for j in range(rows):
+            for i in range(cols):
+                frame_location = (self.rect.w * i, self.rect.h * j)
+                frame = sheet.subsurface(
+                    pygame.Rect(frame_location, self.rect.size)
+                )
+                self.frames.extendleft([frame] * 3)
+
+    def update(self):
+        self.frames.rotate()
+        self.image = self.frames[0]
