@@ -17,17 +17,16 @@ def main():
                 flags=pygame.FULLSCREEN | pygame.HWSURFACE | pygame.SCALED)
     pygame.display.set_caption('Game')
 
-    pygame.mouse.set_visible(False)
-    cursor = CustomCursor(config.CURSOR_FILENAME)
-
-    knight = Knight()
-    knight.add_weapon(BaseWeapon('awp', damage=5, cooldown=2))
-    knight.add_weapon(Broom())
+    hero = Knight()
+    hero.add_weapon(BaseWeapon('awp', damage=5, cooldown=2))
+    hero.add_weapon(Broom())
 
     try:
-        menu.menu_screen(screen, cursor)
+        menu.menu_screen(screen)
     except NewGamePseudoError:
-        gameplay.play_level(screen, cursor, knight)
+        pygame.mouse.set_visible(False)
+        cursor = CustomCursor(config.CURSOR_FILENAME)
+        gameplay.play_level(screen, cursor, hero)
     except ExitPseudoError:
         pass
 
