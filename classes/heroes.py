@@ -34,7 +34,7 @@ class BaseHero(pygame.sprite.Sprite):
             for frame in self.left_frames
         ])
 
-        self.currect, self.opposite = self.left_frames, self.right_frames
+        self.currect_frames = self.left_frames
 
     def cut_sheet(self, hero_name, cols, rows):
         sheet = pygame.image.load(f'source/heroes/{hero_name}/default.png')
@@ -53,21 +53,20 @@ class BaseHero(pygame.sprite.Sprite):
         self.direction[1] += y_vector_change
 
         if self.direction[0] == -1:
-            self.currect, self.opposite = self.left_frames, self.right_frames
-            self.image = self.currect[0]
+            self.currect_frames = self.left_frames
+            self.image = self.currect_frames[0]
             self.weapon.image = self.weapon.image_left
 
         elif self.direction[0] == 1:
-            self.currect, self.opposite = self.right_frames, self.left_frames
-            self.image = self.currect[0]
+            self.currect_frames = self.right_frames
+            self.image = self.currect_frames[0]
             self.weapon.image = self.weapon.image_right
 
         self.x_direction = self.direction[0] or self.x_direction
 
     def update(self):
-        self.currect.rotate()
-        self.opposite.rotate()
-        self.image = self.currect[0]
+        self.currect_frames.rotate()
+        self.image = self.currect_frames[0]
 
     def move(self, walls):
         x = self.rect.centerx + self.direction[0] * self.speed
