@@ -14,7 +14,7 @@ class BaseWeapon(pygame.sprite.Sprite):
             f'source/weapons/{weapon_name}/right.png')
         self.image_left = pygame.transform.flip(self.image_right, True, False)
 
-        self.image = self.image_right  # by default, then will be change by direction
+        self.image = self.image_left  # start direction - left
         self.rect = self.image.get_rect()
 
         self.weapon_name = weapon_name
