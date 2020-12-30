@@ -9,12 +9,9 @@ class BaseHero(pygame.sprite.Sprite):
     def __init__(self, hero_name, hp, protection, weapon_limit=2):
         super().__init__()
         # pygame attributes
-        self.image_right = pygame.image.load(
-            f'source/heroes/{hero_name}/default_right.png'
-        )
-        self.image_left = pygame.transform.flip(self.image_right, True, False)
+        self.load_sheet(hero_name)
 
-        self.image = self.image_right  # by default, then will be changed by direction
+        self.image = self.left_frames[0]  # start direction - left
         self.rect = self.image.get_rect()
 
         self.speed = 240 / FPS  # pixels per second
@@ -28,18 +25,49 @@ class BaseHero(pygame.sprite.Sprite):
 
         self.weapons = WeaponSlots(weapon_limit)
 
+    def load_sheet(self, hero_name):
+        self.left_frames = deque()
+        self.cut_sheet(hero_name, 4, 1)
+
+        self.right_frames = deque([
+            pygame.transform.flip(frame, True, False)
+            for frame in self.left_frames
+        ])
+
+        self.currect, self.opposite = self.left_frames, self.right_frames
+
+    def cut_sheet(self, hero_name, cols, rows):
+        sheet = pygame.image.load(f'source/heroes/{hero_name}/default.png')
+        self.rect = pygame.Rect(
+            0, 0, sheet.get_width() // cols, sheet.get_height() // rows
+        )
+        for j in range(rows):
+            for i in range(cols):
+                frame_location = (self.rect.w * i, self.rect.h * j)
+                frame = sheet.subsurface(
+                    pygame.Rect(frame_location, self.rect.size))
+                self.left_frames.extendleft([frame] * 15)
+
     def change_direction(self, x_vector_change, y_vector_change):
         self.direction[0] += x_vector_change
         self.direction[1] += y_vector_change
 
         if self.direction[0] == -1:
-            self.image = self.image_left
+            self.currect, self.opposite = self.left_frames, self.right_frames
+            self.image = self.currect[0]
             self.weapon.image = self.weapon.image_left
+
         elif self.direction[0] == 1:
-            self.image = self.image_right
+            self.currect, self.opposite = self.right_frames, self.left_frames
+            self.image = self.currect[0]
             self.weapon.image = self.weapon.image_right
 
         self.x_direction = self.direction[0] or self.x_direction
+
+    def update(self):
+        self.currect.rotate()
+        self.opposite.rotate()
+        self.image = self.currect[0]
 
     def move(self, walls):
         x = self.rect.centerx + self.direction[0] * self.speed

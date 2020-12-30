@@ -84,6 +84,7 @@ def play_room(screen, cursor, hero, room):
         room.other_sprites.draw(screen)
 
         hero.move(room.walls)
+        hero.update()
         screen.blit(hero.image, hero.rect)
         screen.blit(hero.weapon.image, hero.weapon.rect)
 
