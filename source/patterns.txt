@@ -1,0 +1,47 @@
+WWWWWWWWWWWWWWWWWWWW
+W                  W
+W                  W
+W   EEEEEEEEEEEE   W
+W   EEEEEEEEEEEE   W
+W   EEEEEEEEEEEE   W
+W   EEEEEEEEEEEE   W
+W   EEEEEEEEEEEE   W
+W                  W
+W                  W
+WWWWWWWWWWWWWWWWWWWW
+
+WWWWWWWWWWWWWWW
+W             W
+W  EEEEEEEEE  W
+W  EEEEEEEEE  W
+W  EEEEEEEEE  W
+W             W
+WWWWWWWWWWWWWWW
+
+---
+
+WWWWWWWWW
+W       W
+W       W
+W   B   W
+W       W
+W       W
+WWWWWWWWW
+
+---
+
+WWWWWWW
+W     W
+W     W
+W  P  W
+W     W
+W     W
+WWWWWWW
+
+---
+
+P-#-#
+  |  
+#-#  
+  |  
+  #-S

@@ -1,7 +1,9 @@
+from random import choice
+
 import helpers
 
 
-class Pattern:
+class RoomPattern:
     def __init__(self, pattern):
         self.pattern = list(pattern)
 
@@ -45,48 +47,21 @@ class Pattern:
 
 
 def get_random_scheme():
-    return scheme
+    return choice(levels)
 
 
 def get_random_pattern(room_type):
     if room_type == helpers.ROOM:
-        return Pattern(pattern)
+        return RoomPattern(choice(rooms))
     elif room_type == helpers.SPAWN:
-        return Pattern(spawn)
+        return RoomPattern(choice(spawns))
     elif room_type == helpers.PORTAL:
-        return Pattern(portal)
+        return RoomPattern(choice(portals))
 
 
-pattern = ('WWWWWWWWWWWWWWWWWWWW',
-           'W                  W',
-           'W                  W',
-           'W   EEEEEEEEEEEE   W',
-           'W   EEEEEEEEEEEE   W',
-           'W   EEEEEEEEEEEE   W',
-           'W   EEEEEEEEEEEE   W',
-           'W   EEEEEEEEEEEE   W',
-           'W                  W',
-           'W                  W',
-           'WWWWWWWWWWWWWWWWWWWW',)
-
-
-spawn = ('WWWWWWWWW',
-         'W       W',
-         'W       W',
-         'W   B   W',
-         'W       W',
-         'WWWWWWWWW',)
-
-portal = ('WWWWWWW',
-          'W     W',
-          'W     W',
-          'W  P  W',
-          'W     W',
-          'W     W',
-          'WWWWWWW')
-
-scheme = ('P-#-#',
-          '  |  ',
-          '#-#  ',
-          '  |  ',
-          '  #-S')
+with open('source/patterns.txt') as f:
+    all_patterns = [p.split('\n\n') for p in f.read().split('\n\n---\n\n')]
+    rooms, spawns, portals, levels = [
+        [p.split('\n') for p in group]
+        for group in all_patterns
+    ]
