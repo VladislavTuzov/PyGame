@@ -46,7 +46,7 @@ class RoomPattern:
         return new_wall
 
 
-def get_random_scheme():
+def get_random_level():
     return choice(levels)
 
 

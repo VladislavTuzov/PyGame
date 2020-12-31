@@ -13,8 +13,9 @@ import patterns
 class Level:
     def __init__(self, location):
         self.location = location
-        self.scheme = patterns.get_random_scheme()
-        self.current_position = [0, 0]  # will be changed by spawn and player
+        self.scheme = patterns.get_random_level()
+        self.current_x = 0
+        self.current_y = 0
         self._parse_scheme()
 
     def _parse_scheme(self):
@@ -29,7 +30,8 @@ class Level:
                     self.matrix[i][j] = room
                     if cell == helpers.SPAWN:
                         self.current_room = self.matrix[i][j]
-                        self.current_position = [i, j]
+                        self.current_x = j
+                        self.current_y = i
                 elif cell in helpers.TUNNELS:
                     tunnel = Tunnel(self, self.location, cell)
                     self.matrix[i][j] = tunnel
@@ -39,6 +41,8 @@ class Level:
     def _add_gates(self, pattern, i, j):
         for x in range(i - 1, i + 2):
             for y in range(j - 1, j + 2):
+                if x < 0 or y < 0:
+                    continue
                 try:
                     near_cell = self.scheme[x][y]
                     if near_cell == helpers.V_TUNN:
@@ -55,10 +59,9 @@ class Level:
                     continue
 
     def update_position(self, x_shift, y_shift, hero):
-        self.current_position[0] += x_shift
-        self.current_position[1] += y_shift
-        i, j = self.current_position
-        self.current_room = self.matrix[j][i]
+        self.current_x += x_shift
+        self.current_y += y_shift
+        self.current_room = self.matrix[self.current_y][self.current_x]
         if x_shift == +1:
             self.current_room.place_hero(hero, 'left')
         elif x_shift == -1:
@@ -72,6 +75,9 @@ class Level:
 class Location:
     enemies_spawnpoints = []
     other_sprites = helpers.InteractionGroup()
+
+    def __repr__(self):
+        return f'<{self.__class__.__name__}>'
     
     def is_hero_outside_room(self, hero):
         if hero.rect.x < self.rect.x:
