@@ -3,7 +3,7 @@ from io import BytesIO
 import pygame
 from PIL import Image, ImageFilter
 
-from config import FPS, SCREEN_SIZE, SCREEN_CENTER
+from config import FPS, SCREEN_SIZE, SCREEN_CENTER, POINTS_TOPRIGHT_POS
 from classes.generation import Level
 from classes.enemies import Dardo
 from classes.exceptions import PortalInteractPseudoError
@@ -15,9 +15,10 @@ def play_level(screen, cursor, hero, location='dungeon'):
     level = Level(location)
     room = level.current_room
     hero.rect.center = room.hero_position
+    points = helpers.Points()
     while True:
         try:
-            direction = play_room(screen, cursor, hero, room)
+            direction = play_room(screen, cursor, hero, room, points)
             if direction is not None:
                 level.update_position(*direction, hero)
                 room = level.current_room
@@ -27,7 +28,7 @@ def play_level(screen, cursor, hero, location='dungeon'):
             return
 
 
-def play_room(screen, cursor, hero, room):
+def play_room(screen, cursor, hero, room, points):
     clock = pygame.time.Clock()
 
     enemies = helpers.RectGroup()
@@ -88,12 +89,13 @@ def play_room(screen, cursor, hero, room):
         screen.blit(hero.image, hero.rect)
         screen.blit(hero.weapon.image, hero.weapon.rect)
 
-        bullets.update(room.walls, enemies)
+        bullets.update(room.walls, enemies, points)
         bullets.draw(screen)
 
         enemies.update(hero)
         enemies.draw(screen)
 
+        blit_points(screen, points)
         blit_cursor(screen, cursor)
 
         pygame.display.flip()
@@ -102,6 +104,14 @@ def play_room(screen, cursor, hero, room):
         is_outside, direction = room.is_hero_outside_room(hero)
         if is_outside:
             return direction
+
+
+def blit_points(screen, points):
+    font = pygame.font.Font('source/fonts/PerfectDOSVGA437.ttf', 32)
+    surface = font.render(str(points), True, 'white')
+    rect = surface.get_rect()
+    rect.topright = POINTS_TOPRIGHT_POS
+    screen.blit(surface, rect)
 
 
 def blit_cursor(screen, cursor):

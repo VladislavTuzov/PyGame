@@ -72,3 +72,19 @@ class InteractionGroup(pygame.sprite.Group):
     def interact(self, hero):
         for sprite in self:
             sprite.interact(hero)
+
+
+class Points:
+    """
+    Hidden subclass of int that we can mutable
+    Everywhere, so we musn't return it like default int
+    """
+    def __init__(self, value=0):
+        self.value = value
+
+    def __iadd__(self, other):
+        self.value += other
+        return self
+
+    def __str__(self):
+        return str(self.value)

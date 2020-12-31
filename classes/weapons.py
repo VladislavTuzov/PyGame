@@ -71,7 +71,7 @@ class BaseBullet(pygame.sprite.Sprite):
         self.sound.set_volume(SOUND_VOLUME)
         self.sound.play()
 
-    def update(self, walls, enemies):
+    def update(self, walls, enemies, points):
         self.current_distance += self.speed
         if self.current_distance >= self.max_distance:
             self.kill()
@@ -89,7 +89,7 @@ class BaseBullet(pygame.sprite.Sprite):
         collided_enemies = enemies.colliderect(self.rect)
         if collided_enemies:
             enemy = collided_enemies[0]
-            enemy.hit(self)
+            enemy.hit(self, points)
             self.kill()
 
 
