@@ -76,9 +76,6 @@ class Location:
     enemies_spawnpoints = []
     other_sprites = helpers.InteractionGroup()
 
-    def __repr__(self):
-        return f'<{self.__class__.__name__}>'
-    
     def is_hero_outside_room(self, hero):
         if hero.rect.x < self.rect.x:
             return True, (-1, 0)
