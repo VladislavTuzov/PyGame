@@ -53,18 +53,20 @@ class BaseHero(pygame.sprite.Sprite):
         self.direction[1] += y_vector_change
 
         if self.direction[0] == -1:
-            self.currect_frames = self.left_frames
+            self.currect_frames = self.left_frames.copy()
             self.image = self.currect_frames[0]
             self.weapon.image = self.weapon.image_left
 
         elif self.direction[0] == 1:
-            self.currect_frames = self.right_frames
+            self.currect_frames = self.right_frames.copy()
             self.image = self.currect_frames[0]
             self.weapon.image = self.weapon.image_right
 
         self.x_direction = self.direction[0] or self.x_direction
 
     def update(self):
+        self.left_frames.rotate()
+        self.right_frames.rotate()
         self.currect_frames.rotate()
         self.image = self.currect_frames[0]
 
