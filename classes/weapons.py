@@ -34,6 +34,12 @@ class BaseWeapon(pygame.sprite.Sprite):
                 damage=self.damage
             )
 
+    def change_direction(self, direction):
+        if direction == -1:
+            self.image = self.image_left
+        elif direction == 1:
+            self.image = self.image_right
+
 
 class BaseBullet(pygame.sprite.Sprite):
     def __init__(self, weapon_name, start, pos, speed, damage, max_distance=2000):

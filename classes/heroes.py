@@ -11,7 +11,7 @@ class BaseHero(pygame.sprite.Sprite):
         # pygame attributes
         self.load_sheet(hero_name)
 
-        self.image = self.left_frames[0]  # start direction - left
+        self.image = self.currect_frames[0]  # start direction - left
         self.rect = self.image.get_rect()
 
         self.speed = 240 / FPS  # pixels per second
@@ -22,7 +22,6 @@ class BaseHero(pygame.sprite.Sprite):
         # gameplay attributes
         self.hp = hp
         self.protection = protection
-
         self.weapons = WeaponSlots(weapon_limit)
 
     def load_sheet(self, hero_name):
@@ -53,21 +52,18 @@ class BaseHero(pygame.sprite.Sprite):
         self.direction[1] += y_vector_change
 
         if self.direction[0] == -1:
-            self.currect_frames = self.left_frames.copy()
-            self.image = self.currect_frames[0]
-            self.weapon.image = self.weapon.image_left
-
+            self.currect_frames = self.left_frames
         elif self.direction[0] == 1:
-            self.currect_frames = self.right_frames.copy()
-            self.image = self.currect_frames[0]
-            self.weapon.image = self.weapon.image_right
+            self.currect_frames = self.right_frames
+            
+        self.image = self.currect_frames[0]
+        self.weapon.change_direction(self.direction[0])
 
         self.x_direction = self.direction[0] or self.x_direction
 
     def update(self):
         self.left_frames.rotate()
         self.right_frames.rotate()
-        self.currect_frames.rotate()
         self.image = self.currect_frames[0]
 
     def move(self, walls):
@@ -107,9 +103,7 @@ class BaseHero(pygame.sprite.Sprite):
 
     def scroll(self):
         self.weapons.scroll()
-        x_direction = self.x_direction
-        self.change_direction(+x_direction, 0)
-        self.change_direction(-x_direction, 0)
+        self.weapon.change_direction(self.x_direction)
 
 
 class WeaponSlots(deque):
