@@ -59,9 +59,16 @@ def get_random_pattern(room_type):
         return RoomPattern(choice(portals))
 
 
+def _adjust_spaces_to_levels(levels):
+    for level in levels:
+        level_width = max(len(row) for row in level)
+        level[:] = [f"{row:<{level_width}}" for row in level]
+
+
 with open('source/patterns.txt') as f:
     all_patterns = [p.split('\n\n') for p in f.read().split('\n\n---\n\n')]
     rooms, spawns, portals, levels = [
         [p.split('\n') for p in group]
         for group in all_patterns
     ]
+    _adjust_spaces_to_levels(levels)

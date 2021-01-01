@@ -10,11 +10,23 @@ W                  W
 W                  W
 WWWWWWWWWWWWWWWWWWWW
 
+WWWWWWWWWWWWWWWWWWW
+W                 W
+W                 W
+W   EEEEEEEEEEE   W
+W   EEEEEEEEEEE   W
+W   EEEEEEEEEEE   W
+W                 W
+W                 W
+WWWWWWWWWWWWWWWWWWW
+
 WWWWWWWWWWWWWWW
+W             W
 W             W
 W  EEEEEEEEE  W
 W  EEEEEEEEE  W
 W  EEEEEEEEE  W
+W             W
 W             W
 WWWWWWWWWWWWWWW
 
@@ -49,3 +61,15 @@ P-#-#
 #-#-#-P
   |
 #-#-S
+
+#-#-#-S-#
+|   |
+#-#-#
+  |
+#-#-#-P
+
+#-#-#
+|   |
+#-P #-#
+    | |
+#-#-S-#
