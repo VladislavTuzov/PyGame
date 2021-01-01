@@ -3,8 +3,10 @@ import pygame
 
 # KEYS
 
-MOVEMENT_KEYS = (pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d,
-                 pygame.K_UP, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT)
+MOVEMENT_KEYS = (
+    pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d,
+    pygame.K_UP, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT
+)
 
 
 class CombinedKey:
@@ -76,8 +78,8 @@ class InteractionGroup(pygame.sprite.Group):
 
 class Points:
     """
-    Hidden subclass of int that we can mutable
-    Everywhere, so we musn't return it like default int
+    Hidden subclass of int that we can mutable everywhere,
+    so we musn't return it from functions like default int
     """
     def __init__(self, value=0):
         self.value = value
