@@ -1,4 +1,4 @@
-from math import hypot
+from math import hypot, atan2, cos, sin
 
 import pygame
 
@@ -28,10 +28,11 @@ class BaseEnemy(pygame.sprite.Sprite):
         x_dist = x1 - x0
         y_dist = y1 - y0
         dist = hypot(x_dist, y_dist)
+
         if dist >= 50:
-            coeff = self.speed / dist
-            self.rect.x += x_dist * coeff
-            self.rect.y += y_dist * coeff
+            coeff = atan2(y_dist, x_dist)
+            self.rect.x += self.speed * cos(coeff)
+            self.rect.y += self.speed * sin(coeff)
 
 
 class Dardo(BaseEnemy):
