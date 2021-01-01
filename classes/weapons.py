@@ -133,3 +133,24 @@ class AWP(BaseWeapon):
 
 class AWPBullet(BaseBullet):
     pass
+
+
+class Staff(BaseWeapon):
+    def __init__(self):
+        super().__init__('staff', damage=1, cooldown=1.5)
+
+    def shoot(self, pos):
+        shot_time = time()
+        if shot_time - self.previous_shot_time >= self.cooldown:
+            self.previous_shot_time = shot_time
+            return StaffBullet(
+                self.weapon_name,
+                self.rect.center,
+                pos,
+                speed=280,
+                damage=self.damage
+            )
+
+
+class StaffBullet(BaseBullet):
+    pass
