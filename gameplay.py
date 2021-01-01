@@ -11,14 +11,14 @@ from classes.interface import MenuButton
 import helpers
 
 
-def play_level(screen, cursor, hero, location='dungeon'):
+def play_level(screen, font, cursor, hero, location='dungeon'):
     level = Level(location)
     room = level.current_room
     hero.rect.center = room.hero_position
     points = helpers.Points()
     while True:
         try:
-            direction = play_room(screen, cursor, hero, room, points)
+            direction = play_room(screen, font, cursor, hero, room, points)
             if direction is not None:
                 level.update_position(*direction, hero)
                 room = level.current_room
@@ -28,7 +28,7 @@ def play_level(screen, cursor, hero, location='dungeon'):
             return
 
 
-def play_room(screen, cursor, hero, room, points):
+def play_room(screen, font, cursor, hero, room, points):
     clock = pygame.time.Clock()
 
     enemies = helpers.RectGroup()
@@ -64,8 +64,7 @@ def play_room(screen, cursor, hero, room, points):
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pressed = True
-                pos = event.pos
-                bullet = hero.shoot(pos, bullets)
+                hero.shoot(event.pos, bullets)
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 mouse_pressed = False
@@ -95,7 +94,7 @@ def play_room(screen, cursor, hero, room, points):
         enemies.update(hero)
         enemies.draw(screen)
 
-        blit_points(screen, points)
+        blit_points(screen, font, points)
         blit_cursor(screen, cursor)
 
         pygame.display.flip()
@@ -106,8 +105,7 @@ def play_room(screen, cursor, hero, room, points):
             return direction
 
 
-def blit_points(screen, points):
-    font = pygame.font.Font('source/fonts/PerfectDOSVGA437.ttf', 32)
+def blit_points(screen, font, points):
     surface = font.render(str(points), True, 'white')
     rect = surface.get_rect()
     rect.topright = POINTS_TOPRIGHT_POS
@@ -142,12 +140,14 @@ def escape_menu(screen, hero, cursor):
                 if home_button.collidepoint(pos):
                     return False
                 return True
+
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return True
                 elif event.key in helpers.MOVEMENT_KEYS:
                     x_shift, y_shift = handle_movement(event)
                     hero.change_direction(x_shift, y_shift)
+
             elif event.type == pygame.KEYUP:
                 if event.key in helpers.MOVEMENT_KEYS:
                     x_shift, y_shift = handle_movement(event)

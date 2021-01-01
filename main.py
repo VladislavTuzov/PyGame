@@ -15,6 +15,7 @@ def main():
 
     screen = pygame.display.set_mode(config.SCREEN_SIZE,
                 flags=pygame.FULLSCREEN | pygame.HWSURFACE | pygame.SCALED)
+    font = pygame.font.Font(config.FONT_PATH, config.FONT_SIZE)
     pygame.display.set_caption('Game')
 
     hero = Knight()
@@ -26,7 +27,7 @@ def main():
     except NewGamePseudoError:
         pygame.mouse.set_visible(False)
         cursor = CustomCursor(config.CURSOR_FILENAME)
-        gameplay.play_level(screen, cursor, hero)
+        gameplay.play_level(screen, font, cursor, hero)
     except ExitPseudoError:
         pass
 
