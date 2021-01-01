@@ -7,7 +7,7 @@ from config import FPS, SOUND_VOLUME
 
 
 class BaseWeapon(pygame.sprite.Sprite):
-    def __init__(self, weapon_name, damage, cooldown):
+    def __init__(self, weapon_name, cooldown):
         super().__init__()
 
         self.image_right = pygame.image.load(
@@ -17,22 +17,8 @@ class BaseWeapon(pygame.sprite.Sprite):
         self.image = self.image_left  # start direction - left
         self.rect = self.image.get_rect()
 
-        self.weapon_name = weapon_name
-        self.damage = damage
         self.cooldown = cooldown
         self.previous_shot_time = time() - self.cooldown - 0.00001
-
-    def shoot(self, pos):
-        shot_time = time()
-        if shot_time - self.previous_shot_time >= self.cooldown:
-            self.previous_shot_time = shot_time
-            return BaseBullet(
-                self.weapon_name,
-                self.rect.center,
-                pos,
-                speed=420,
-                damage=self.damage
-            )
 
     def change_direction(self, direction):
         if direction == -1:
@@ -40,34 +26,36 @@ class BaseWeapon(pygame.sprite.Sprite):
         elif direction == 1:
             self.image = self.image_right
 
+    def shoot(self, target):
+        shot_time = time()
+        if shot_time - self.previous_shot_time >= self.cooldown:
+            self.previous_shot_time = shot_time
+            return self.bullet(start=self.rect.center, target=target)
+
 
 class BaseBullet(pygame.sprite.Sprite):
-    def __init__(self, weapon_name, start, pos, speed, damage, max_distance=2000):
+    max_distance = 2000
+
+    def __init__(self, start, target):
         super().__init__()
 
-        # pygame attributes
-        self.image = pygame.image.load(
-            f'source/weapons/{weapon_name}/bullet.png')
         self.rect = self.image.get_rect()
         self.rect.center = start
 
-        # game attributes
-        self.speed = speed / FPS  # pixels by second
-        self.damage = damage
-        self.max_distance = max_distance
+        self.shoot(start, target)
 
+    def shoot(self, start, target):
         # attributes for flight calcutations
         self.current_distance = 0
         self.x0, self.y0 = start
-        x1, y1 = pos
+        x1, y1 = target
         self.x_distance = x1 - self.x0
         self.y_distance = y1 - self.y0
         self.target_distance = hypot(self.x_distance, self.y_distance)
 
-        # play sound because when bullet initializes
-        # it means that we shoot
-        self.sound = pygame.mixer.Sound(
-            f'source/weapons/{weapon_name}/shot.wav')
+        self.play_sound()
+
+    def play_sound(self):
         self.sound.set_volume(SOUND_VOLUME)
         self.sound.play()
 
@@ -95,62 +83,38 @@ class BaseBullet(pygame.sprite.Sprite):
 
 class Broom(BaseWeapon):
     def __init__(self):
-        super().__init__('broom', damage=1, cooldown=0.2)
-
-    def shoot(self, pos):
-        shot_time = time()
-        if shot_time - self.previous_shot_time >= self.cooldown:
-            self.previous_shot_time = shot_time
-            return BroomBullet(
-                        self.weapon_name,
-                        self.rect.center,
-                        pos,
-                        speed=420,
-                        damage=self.damage
-                   )
+        super().__init__('broom', cooldown=0.2)
+        self.bullet = BroomBullet
 
 
 class BroomBullet(BaseBullet):
-    pass
+    image = pygame.image.load('source/weapons/broom/bullet.png')
+    sound = pygame.mixer.Sound('source/weapons/broom/shot.wav')
+    damage = 1
+    speed = 420 / FPS
 
 
 class AWP(BaseWeapon):
     def __init__(self):
-        super().__init__('awp', damage=5, cooldown=2)
-
-    def shoot(self, pos):
-        shot_time = time()
-        if shot_time - self.previous_shot_time >= self.cooldown:
-            self.previous_shot_time = shot_time
-            return AWPBullet(
-                        self.weapon_name,
-                        self.rect.center,
-                        pos,
-                        speed=900,
-                        damage=self.damage
-                   )
+        super().__init__('awp', cooldown=2)
+        self.bullet = AWPBullet
 
 
 class AWPBullet(BaseBullet):
-    pass
+    image = pygame.image.load('source/weapons/awp/bullet.png')
+    sound = pygame.mixer.Sound('source/weapons/awp/shot.wav')
+    damage = 5
+    speed = 900 / FPS
 
 
 class Staff(BaseWeapon):
     def __init__(self):
-        super().__init__('staff', damage=1, cooldown=1.5)
-
-    def shoot(self, pos):
-        shot_time = time()
-        if shot_time - self.previous_shot_time >= self.cooldown:
-            self.previous_shot_time = shot_time
-            return StaffBullet(
-                self.weapon_name,
-                self.rect.center,
-                pos,
-                speed=280,
-                damage=self.damage
-            )
+        super().__init__('staff', cooldown=1.5)
+        self.bullet = StaffBullet
 
 
 class StaffBullet(BaseBullet):
-    pass
+    image = pygame.image.load('source/weapons/staff/bullet.png')
+    sound = pygame.mixer.Sound('source/weapons/staff/shot.wav')
+    damage = 1
+    speed = 280 / FPS

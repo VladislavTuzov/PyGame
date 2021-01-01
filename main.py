@@ -1,5 +1,10 @@
 import pygame
 
+# before import our modules we need to initialize
+# pygame.mixer because weapons in classes/weapons
+# use him for their shooting sounds
+pygame.mixer.init()
+
 import gameplay
 import menu
 
