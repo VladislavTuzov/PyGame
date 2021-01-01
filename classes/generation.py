@@ -4,7 +4,7 @@ from random import choice, sample
 
 import pygame
 
-from config import SCREEN_WIDTH, SCREEN_HEIGHT
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, SOUND_VOLUME
 from .exceptions import PortalInteractPseudoError
 import helpers
 import patterns
@@ -325,7 +325,6 @@ def get_image_size(path):
     return width, height
 
 
-
 class Portal(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
@@ -354,4 +353,7 @@ class Portal(pygame.sprite.Sprite):
 
     def interact(self, hero):
         if self.rect.colliderect(hero.rect):
+            sound = pygame.mixer.Sound(f'source/sounds/portal.wav')
+            sound.set_volume(SOUND_VOLUME)
+            sound.play()
             raise PortalInteractPseudoError('go to another level')
