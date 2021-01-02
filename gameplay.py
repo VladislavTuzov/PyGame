@@ -3,7 +3,10 @@ from io import BytesIO
 import pygame
 from PIL import Image, ImageFilter
 
-from config import FPS, SCREEN_SIZE, SCREEN_CENTER, POINTS_TOPRIGHT_POS
+from config import (
+    FPS, SCREEN_SIZE, SCREEN_CENTER,
+    POINTS_TOPRIGHT_POS, BAR_TOPLEFT_POS
+)
 from classes.generation import Level
 from classes.enemies import Dardo
 from classes.exceptions import PortalInteractPseudoError
@@ -95,6 +98,7 @@ def play_room(screen, font, cursor, hero, room, points):
         enemies.draw(screen)
 
         blit_points(screen, font, points)
+        blit_bar(screen, font, hero)
         blit_cursor(screen, cursor)
 
         pygame.display.flip()
@@ -106,10 +110,14 @@ def play_room(screen, font, cursor, hero, room, points):
 
 
 def blit_points(screen, font, points):
-    surface = font.render(str(points), True, 'white')
+    surface = font.render(str(points), True, "white")
     rect = surface.get_rect()
     rect.topright = POINTS_TOPRIGHT_POS
     screen.blit(surface, rect)
+
+def blit_bar(screen, font, hero):
+    surface = font.render(f"HP: {hero.hp}", True, "white")
+    screen.blit(surface, BAR_TOPLEFT_POS)
 
 
 def blit_cursor(screen, cursor):
