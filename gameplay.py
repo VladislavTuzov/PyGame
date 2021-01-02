@@ -1,3 +1,4 @@
+from functools import lru_cache
 from io import BytesIO
 
 import pygame
@@ -110,14 +111,21 @@ def play_room(screen, font, cursor, hero, room, points):
 
 
 def blit_points(screen, font, points):
-    surface = font.render(str(points), True, "white")
+    surface = _render_text(font, str(points))
     rect = surface.get_rect()
     rect.topright = POINTS_TOPRIGHT_POS
     screen.blit(surface, rect)
 
+
 def blit_bar(screen, font, hero):
-    surface = font.render(f"HP: {hero.hp}", True, "white")
+    surface = _render_text(font, f"HP: {hero.hp}")
     screen.blit(surface, BAR_TOPLEFT_POS)
+
+
+@lru_cache(maxsize=2)
+def _render_text(font, text):
+    surface = font.render(text, True, "white")
+    return surface
 
 
 def blit_cursor(screen, cursor):
