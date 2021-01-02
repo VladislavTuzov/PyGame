@@ -203,7 +203,7 @@ def blur_screen(screen):
 
 
 def midlevel_screen(screen, font, clock, hero, room, sprites, level_number):
-    background = screen.copy().convert_alpha()
+    background = screen.copy()
     background.fill("black")
 
     surface = _render_text(font, f"Level {level_number}")
@@ -223,9 +223,8 @@ def midlevel_screen(screen, font, clock, hero, room, sprites, level_number):
         screen.blit(hero.image, hero.rect)
         screen.blit(hero.weapon.image, hero.weapon.rect)
 
-        background_copy = background.copy()
-        background_copy.set_alpha(255 * elapsed_time / 1.9)
-        screen.blit(background_copy, (0, 0))
+        background.set_alpha(255 * elapsed_time / 1.9)
+        screen.blit(background, (0, 0))
 
         pygame.display.flip()
 
