@@ -31,8 +31,8 @@ class BaseEnemy(pygame.sprite.Sprite):
 
         if dist >= 50:
             coeff = atan2(y_dist, x_dist)
-            self.rect.x += self.speed * cos(coeff)
-            self.rect.y += self.speed * sin(coeff)
+            self.rect.x += self.speed * round(cos(coeff), 1)
+            self.rect.y += self.speed * round(sin(coeff), 1)
 
 
 class Dardo(BaseEnemy):
