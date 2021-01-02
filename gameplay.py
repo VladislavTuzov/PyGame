@@ -1,5 +1,6 @@
 from functools import lru_cache
 from io import BytesIO
+from time import time
 
 import pygame
 from PIL import Image, ImageFilter
@@ -10,26 +11,32 @@ from config import (
 )
 from classes.generation import Level
 from classes.enemies import Dardo
-from classes.exceptions import PortalInteractPseudoError
+from classes.exceptions import PortalInteractPseudoError, ExitPseudoError
 from classes.interface import MenuButton
 import helpers
 
 
-def play_level(screen, font, cursor, hero, location='dungeon'):
+def play(screen, font, cursor, hero, location="dungeon"):
+    points = helpers.Points()
     level = Level(location)
+    while True:
+        # new level generates after midlevel screen
+        level = play_level(screen, font, cursor, hero, level, location, points)
+
+
+def play_level(screen, font, cursor, hero, level, location, points):
     room = level.current_room
     hero.rect.center = room.hero_position
-    points = helpers.Points()
     while True:
         try:
             direction = play_room(screen, font, cursor, hero, room, points)
-            if direction is not None:
-                level.update_position(*direction, hero)
-                room = level.current_room
-            else:
-                return
-        except PortalInteractPseudoError:
-            return
+            level.update_position(*direction, hero)
+            room = level.current_room
+
+        except PortalInteractPseudoError as e:
+            midlevel_screen(*e.args + (level.number,))
+            new_level = Level(location)
+            return new_level
 
 
 def play_room(screen, font, cursor, hero, room, points):
@@ -50,7 +57,7 @@ def play_room(screen, font, cursor, hero, room, points):
         for event in pygame.event.get():
             if (event.type == pygame.QUIT
                     or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                running = escape_menu(screen, hero, cursor)
+                escape_menu(screen, hero, cursor)
 
             elif event.type == pygame.KEYDOWN:
                 if event.key in helpers.MOVEMENT_KEYS:
@@ -59,7 +66,12 @@ def play_room(screen, font, cursor, hero, room, points):
                 elif event.key == helpers.WEAPON_SCROLL:
                     hero.scroll()
                 elif event.key == helpers.INTERACTION:
-                    room.other_sprites.interact(hero)
+                    try:
+                        room.other_sprites.interact(hero)
+                    except PortalInteractPseudoError:
+                        # add args for mid-level screen
+                        raise PortalInteractPseudoError(
+                            screen, font, clock, hero, room, room.other_sprites)
 
             elif event.type == pygame.KEYUP:
                 if event.key in helpers.MOVEMENT_KEYS:
@@ -122,7 +134,7 @@ def blit_bar(screen, font, hero):
     screen.blit(surface, BAR_TOPLEFT_POS)
 
 
-@lru_cache(maxsize=2)
+@lru_cache(maxsize=3)
 def _render_text(font, text):
     surface = font.render(text, True, "white")
     return surface
@@ -154,12 +166,12 @@ def escape_menu(screen, hero, cursor):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = event.pos
                 if home_button.collidepoint(pos):
-                    return False
-                return True
+                    raise ExitPseudoError("game exit")
+                return
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    return True
+                    return
                 elif event.key in helpers.MOVEMENT_KEYS:
                     x_shift, y_shift = handle_movement(event)
                     hero.change_direction(x_shift, y_shift)
@@ -188,3 +200,33 @@ def blur_screen(screen):
 
     blurred_image = pygame.image.load(blurred_image)
     return blurred_image
+
+
+def midlevel_screen(screen, font, clock, hero, room, sprites, level_number):
+    background = screen.copy().convert_alpha()
+    background.fill("black")
+
+    surface = _render_text(font, f"Level {level_number}")
+    rect = surface.get_rect()
+    rect.center = SCREEN_CENTER
+    background.blit(surface, rect)
+
+    start = time()
+    while (elapsed_time := time() - start) < 2:
+        screen.fill("black")
+
+        screen.blit(room.image, room.rect)
+
+        sprites.update()
+        sprites.draw(screen)
+
+        screen.blit(hero.image, hero.rect)
+        screen.blit(hero.weapon.image, hero.weapon.rect)
+
+        background_copy = background.copy()
+        background_copy.set_alpha(255 * elapsed_time / 1.9)
+        screen.blit(background_copy, (0, 0))
+
+        pygame.display.flip()
+
+        clock.tick(FPS)

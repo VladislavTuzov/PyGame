@@ -30,11 +30,12 @@ def main():
     try:
         menu.menu_screen(screen)
     except NewGamePseudoError:
-        pygame.mouse.set_visible(False)
-        cursor = CustomCursor(config.CURSOR_FILENAME)
-        gameplay.play_level(screen, font, cursor, hero)
-    except ExitPseudoError:
-        pass
+        try:
+            pygame.mouse.set_visible(False)
+            cursor = CustomCursor(config.CURSOR_FILENAME)
+            gameplay.play(screen, font, cursor, hero)
+        except ExitPseudoError:
+            pass
 
     pygame.quit()
 

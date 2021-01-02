@@ -14,7 +14,11 @@ import patterns
 
 
 class Level:
+    number = 1
+
     def __init__(self, location):
+        self.__class__.number += 1
+
         self.location = location
         self.scheme = patterns.get_random_level()
         self.current_x = 0
