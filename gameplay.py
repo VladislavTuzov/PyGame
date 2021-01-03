@@ -59,6 +59,7 @@ def play_room(screen, font, cursor, hero, room, points):
     enemies_bullets = helpers.EnemiesBullets()
 
     mouse_pressed = False
+    is_acceleration = False
     running = True
     while running:
 
@@ -73,6 +74,8 @@ def play_room(screen, font, cursor, hero, room, points):
                     hero.change_direction(x_shift, y_shift)
                 elif event.key == helpers.WEAPON_SCROLL:
                     hero.scroll()
+                elif event.key == helpers.ACCELERATION:
+                    is_acceleration = True
                 elif event.key == helpers.INTERACTION:
                     try:
                         room.other_sprites.interact(hero)
@@ -85,6 +88,8 @@ def play_room(screen, font, cursor, hero, room, points):
                 if event.key in helpers.MOVEMENT_KEYS:
                     x_shift, y_shift = handle_movement(event)
                     hero.change_direction(-x_shift, -y_shift)
+                elif event.key == helpers.ACCELERATION:
+                    is_acceleration = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pressed = True
@@ -107,7 +112,7 @@ def play_room(screen, font, cursor, hero, room, points):
         room.other_sprites.update()
         room.other_sprites.draw(screen)
 
-        hero.move(room.walls)
+        hero.move(room.walls, is_acceleration)
         hero.update_image()
         screen.blit(hero.image, hero.rect)
         screen.blit(hero.weapon.image, hero.weapon.rect)
@@ -147,7 +152,8 @@ def blit_points(screen, font, points):
 
 
 def blit_bar(screen, font, hero):
-    surface = _render_text(font, f"HP: {hero.hp}")
+    surface = _render_text(
+        font, f"HP: {hero.hp}  Stamina: {round(hero.stamina)}")
     screen.blit(surface, BAR_TOPLEFT_POS)
 
 

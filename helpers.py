@@ -29,6 +29,7 @@ RIGHT = CombinedKey(pygame.K_d, pygame.K_RIGHT)
 
 WEAPON_SCROLL = pygame.K_TAB
 INTERACTION   = pygame.K_SPACE
+ACCELERATION  = pygame.K_LSHIFT
 
 # ROOM GENERATION
 

@@ -22,6 +22,7 @@ class BaseHero(pygame.sprite.Sprite):
 
         # gameplay attributes
         self.hp = hp
+        self.stamina = 100
         self.protection = protection
         self.weapons = WeaponSlots(weapon_limit)
 
@@ -67,9 +68,17 @@ class BaseHero(pygame.sprite.Sprite):
         self.right_frames.rotate()
         self.image = self.currect_frames[0]
 
-    def move(self, walls):
-        x = self.rect.centerx + self.direction[0] * self.speed
-        y = self.rect.centery + self.direction[1] * self.speed
+    def move(self, walls, is_acceleration):
+        if is_acceleration and self.stamina > 0:
+            speed_coeff = 1 + self.stamina / 200
+            self.stamina -= 50 / FPS
+        else:
+            speed_coeff = 1
+            if self.stamina < 100:
+                self.stamina += 25 / FPS
+
+        x = self.rect.centerx + self.direction[0] * self.speed * speed_coeff
+        y = self.rect.centery + self.direction[1] * self.speed * speed_coeff
 
         prev_center = self.rect.center
         self.rect.centerx = x
