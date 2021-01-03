@@ -15,7 +15,7 @@ def menu_screen(screen):
     screen_rect = screen.get_rect()
     screen_width, screen_height = screen_rect.size
 
-    background = pygame.image.load('source/fon_def.png')
+    background = pygame.image.load('source/menu.png')
     new_game_button = MenuButton('new_game', SCREEN_CENTER)
 
     pygame.mixer.music.play(loops=-1, fade_ms=10000)
