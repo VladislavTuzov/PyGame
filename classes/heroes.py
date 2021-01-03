@@ -26,6 +26,8 @@ class BaseHero(pygame.sprite.Sprite):
         self.protection = protection
         self.weapons = WeaponSlots(weapon_limit)
 
+        self.is_acceleration = False
+
     def load_sheet(self, hero_name):
         self.left_frames = deque()
         self.cut_sheet(hero_name, 4, 1)
@@ -68,9 +70,15 @@ class BaseHero(pygame.sprite.Sprite):
         self.right_frames.rotate()
         self.image = self.currect_frames[0]
 
-    def move(self, walls, is_acceleration):
-        if is_acceleration and self.stamina > 0:
-            speed_coeff = 1 + self.stamina / 100
+    def set_acceleration(self, value):
+        if self.stamina >= 100:
+            self.is_acceleration = value
+        else:
+            self.is_acceleration = False
+
+    def move(self, walls):
+        if self.is_acceleration and self.stamina > 0:
+            speed_coeff = 2
             self.stamina -= 100 / FPS
         else:
             speed_coeff = 1
