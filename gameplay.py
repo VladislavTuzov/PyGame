@@ -153,11 +153,11 @@ def blit_points(screen, font, points):
 
 def blit_bar(screen, font, hero):
     surface = _render_text(
-        font, f"HP: {hero.hp}  Stamina: {round(hero.stamina)}")
+        font, f"HP: {hero.hp}  Stamina: {round(int(hero.stamina), -1)}")
     screen.blit(surface, BAR_TOPLEFT_POS)
 
 
-@lru_cache(maxsize=3)
+@lru_cache(maxsize=16)
 def _render_text(font, text):
     surface = font.render(text, True, "white")
     return surface
