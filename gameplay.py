@@ -159,7 +159,7 @@ def handle_movement(event):
 
 def escape_menu(screen, hero, cursor):
     blurred_screen = blur_screen(screen)
-    home_button = MenuButton("home", *SCREEN_CENTER)
+    home_button = MenuButton("home", SCREEN_CENTER)
 
     while True:
         for event in pygame.event.get():
