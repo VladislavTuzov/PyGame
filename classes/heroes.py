@@ -70,12 +70,12 @@ class BaseHero(pygame.sprite.Sprite):
 
     def move(self, walls, is_acceleration):
         if is_acceleration and self.stamina > 0:
-            speed_coeff = 1 + self.stamina / 200
-            self.stamina -= 50 / FPS
+            speed_coeff = 1 + self.stamina / 100
+            self.stamina -= 100 / FPS
         else:
             speed_coeff = 1
             if self.stamina < 100:
-                self.stamina += 25 / FPS
+                self.stamina += 15 / FPS
 
         x = self.rect.centerx + self.direction[0] * self.speed * speed_coeff
         y = self.rect.centery + self.direction[1] * self.speed * speed_coeff
