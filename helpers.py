@@ -48,22 +48,20 @@ BIRTH = "B"
 ENEMY = "E"
 
 
-class RectList(list):
+class EnemiesGroup(pygame.sprite.Group):
     """
-    List of rects that provide colliderect method.
-    Was made for easier wall collision check
+    Group for enemies and their methods
     """
-    def colliderect(self, rect):
-        return any(r.colliderect(rect) for r in self)
+    def collidesprite(self, sprite):
+        return pygame.sprite.spritecollide(sprite, self, dokill=False)
 
+    def shoot(self, target, bullets):
+        for enemy in self:
+            enemy.shoot(target, bullets)
 
-class RectGroup(pygame.sprite.Group):
-    """
-    Pygame's Group but with colliderect method.
-    Was made for check bullet collision with enemies
-    """
-    def colliderect(self, rect):
-        return [s for s in self if s.rect.colliderect(rect)]
+    def draw_weapons(self, screen):
+        for enemy in self:
+            screen.blit(enemy.weapon.image, enemy.weapon.rect)
 
 
 class InteractionGroup(pygame.sprite.Group):
@@ -74,6 +72,16 @@ class InteractionGroup(pygame.sprite.Group):
     def interact(self, hero):
         for sprite in self:
             sprite.interact(hero)
+
+
+class EnemiesBullets(pygame.sprite.Group):
+    """
+    Group of enemies bullets for call
+    update_as_enemies Bullet's method
+    """
+    def update_as_enemies(self, walls, target):
+        for bullet in self:
+            bullet.update_as_enemies(walls, target)
 
 
 class Points:

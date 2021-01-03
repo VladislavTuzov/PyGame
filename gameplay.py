@@ -11,7 +11,10 @@ from config import (
 )
 from classes.generation import Level
 from classes.enemies import Dardo
-from classes.exceptions import PortalInteractPseudoError, ExitPseudoError
+from classes.exceptions import (
+    PortalInteractPseudoError,
+    ExitPseudoError, HeroDeath
+)
 from classes.interface import MenuButton
 import helpers
 
@@ -20,8 +23,12 @@ def play(screen, font, cursor, hero, location="dungeon"):
     points = helpers.Points()
     level = Level(location)
     while True:
-        # new level generates after midlevel screen
-        level = play_level(screen, font, cursor, hero, level, location, points)
+        try:
+            # new level generates after midlevel screen
+            level = play_level(screen, font, cursor, hero, level, location, points)
+        except HeroDeath as e:
+            gameover_screen(*e.args)
+            return
 
 
 def play_level(screen, font, cursor, hero, level, location, points):
@@ -42,13 +49,14 @@ def play_level(screen, font, cursor, hero, level, location, points):
 def play_room(screen, font, cursor, hero, room, points):
     clock = pygame.time.Clock()
 
-    enemies = helpers.RectGroup()
+    enemies = helpers.EnemiesGroup()
     for enemy_spawnpoint in room.enemies_spawnpoints:
         enemy = Dardo()
         enemy.rect.center = enemy_spawnpoint
         enemies.add(enemy)
 
     bullets = pygame.sprite.Group()
+    enemies_bullets = helpers.EnemiesBullets()
 
     mouse_pressed = False
     running = True
@@ -92,7 +100,7 @@ def play_room(screen, font, cursor, hero, room, points):
         if not enemies:
             room.delete_enemies_spawns()
 
-        screen.fill('black')
+        screen.fill("black")
 
         screen.blit(room.image, room.rect)
 
@@ -100,15 +108,24 @@ def play_room(screen, font, cursor, hero, room, points):
         room.other_sprites.draw(screen)
 
         hero.move(room.walls)
-        hero.update()
+        hero.update_image()
         screen.blit(hero.image, hero.rect)
         screen.blit(hero.weapon.image, hero.weapon.rect)
 
         bullets.update(room.walls, enemies, points)
         bullets.draw(screen)
 
+        try:
+            enemies_bullets.update_as_enemies(room.walls, hero)
+            enemies_bullets.draw(screen)
+        except HeroDeath:
+            # add args for gameover screen
+            raise HeroDeath(screen, font, clock, hero, room, enemies)
+
         enemies.update(hero)
+        enemies.shoot(hero.rect.center, enemies_bullets)
         enemies.draw(screen)
+        enemies.draw_weapons(screen)
 
         blit_points(screen, font, points)
         blit_bar(screen, font, hero)
@@ -224,6 +241,35 @@ def midlevel_screen(screen, font, clock, hero, room, sprites, level_number):
         screen.blit(hero.weapon.image, hero.weapon.rect)
 
         background.set_alpha(255 * elapsed_time / 1.9)
+        screen.blit(background, (0, 0))
+
+        pygame.display.flip()
+
+        clock.tick(FPS)
+
+
+def gameover_screen(screen, font, clock, hero, room, enemies):
+    background = screen.copy()
+    background.fill("black")
+
+    surface = _render_text(font, "game over")
+    rect = surface.get_rect()
+    rect.center = SCREEN_CENTER
+    background.blit(surface, rect)
+
+    start = time()
+    while (elapsed_time := time() - start) < 3:
+        screen.fill("black")
+
+        screen.blit(room.image, room.rect)
+
+        enemies.draw(screen)
+        enemies.draw_weapons(screen)
+
+        screen.blit(hero.image, hero.rect)
+        screen.blit(hero.weapon.image, hero.weapon.rect)
+
+        background.set_alpha(255 * elapsed_time / 2)
         screen.blit(background, (0, 0))
 
         pygame.display.flip()

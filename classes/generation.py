@@ -134,8 +134,8 @@ class Room(Location):
         image_center_x = image_width // 2
         image_center_y = image_height // 2
 
-        self.walls = helpers.RectList()
-        self.gates = helpers.RectList()
+        self.walls = []
+        self.gates = []
         self.other_sprites = helpers.InteractionGroup()
 
         self.hero_position = (0, 0)
@@ -233,7 +233,7 @@ class Tunnel(Location):
         image_center = (image_width // 2, image_height // 2)
         image_center_x, image_center_y = image_center
 
-        self.walls = helpers.RectList()
+        self.walls = []
 
         for i in range(SCREEN_WIDTH // plate_width + 1):
             for j in range(tunnel_height):
@@ -270,7 +270,7 @@ class Tunnel(Location):
         image_center = (image_width // 2, image_height // 2)
         image_center_x, image_center_y = image_center
 
-        self.walls = helpers.RectList()
+        self.walls = []
 
         for i in range(tunnel_width):
             for j in range(SCREEN_HEIGHT // plate_height + 1):

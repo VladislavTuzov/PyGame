@@ -3,6 +3,7 @@ from collections import deque
 import pygame
 
 from config import FPS
+from classes.exceptions import HeroDeath
 
 
 class BaseHero(pygame.sprite.Sprite):
@@ -14,7 +15,7 @@ class BaseHero(pygame.sprite.Sprite):
         self.image = self.currect_frames[0]  # start direction - left
         self.rect = self.image.get_rect()
 
-        self.speed = 240 / FPS  # pixels per second
+        self.speed = 270 / FPS  # pixels per second
         self.direction = [0, 0]
 
         self.x_direction = 0  # help us to rotate weapon when scrolling
@@ -61,7 +62,7 @@ class BaseHero(pygame.sprite.Sprite):
 
         self.x_direction = self.direction[0] or self.x_direction
 
-    def update(self):
+    def update_image(self):
         self.left_frames.rotate()
         self.right_frames.rotate()
         self.image = self.currect_frames[0]
@@ -72,18 +73,23 @@ class BaseHero(pygame.sprite.Sprite):
 
         prev_center = self.rect.center
         self.rect.centerx = x
-        if walls.colliderect(self.rect):
+        if self.rect.collidelist(walls) != -1:
             self.rect.center = prev_center
 
         prev_center = self.rect.center
         self.rect.centery = y
-        if walls.colliderect(self.rect):
+        if self.rect.collidelist(walls) != -1:
             self.rect.center = prev_center
 
         self.weapon.rect.center = (self.rect.centerx, self.rect.centery + 10)
 
-    def shoot(self, pos, bullets):
-        bullet = self.weapon.shoot(pos)
+    def hit(self, bullet):
+        self.hp -= bullet.damage
+        if self.hp <= 0:
+            raise HeroDeath("Game over")
+
+    def shoot(self, target, bullets):
+        bullet = self.weapon.shoot(target)
         if bullet:
             bullets.add(bullet)
 

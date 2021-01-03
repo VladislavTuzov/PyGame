@@ -60,6 +60,27 @@ class BaseBullet(pygame.sprite.Sprite):
         self.sound.play()
 
     def update(self, walls, enemies, points):
+        self.update_pos()
+
+        if self.rect.collidelist(walls) != -1:
+            self.kill()
+
+        elif collided_enemies := enemies.collidesprite(self):
+            enemy = collided_enemies[0]
+            enemy.hit(self, points)
+            self.kill()
+
+    def update_as_enemies(self, walls, hero):
+        self.update_pos()
+
+        if self.rect.collidelist(walls) != -1:
+            self.kill()
+
+        elif pygame.sprite.collide_rect(self, hero):
+            hero.hit(self)
+            self.kill()
+
+    def update_pos(self):
         self.current_distance += self.speed
         if self.current_distance >= self.max_distance:
             self.kill()
@@ -67,18 +88,7 @@ class BaseBullet(pygame.sprite.Sprite):
 
         x = self.x0 + self.x_distance * coeff
         y = self.y0 + self.y_distance * coeff
-        prev_center = self.rect.center
         self.rect.center = (x, y)
-
-        if walls.colliderect(self.rect):
-            self.rect.center = prev_center
-            self.kill()
-
-        collided_enemies = enemies.colliderect(self.rect)
-        if collided_enemies:
-            enemy = collided_enemies[0]
-            enemy.hit(self, points)
-            self.kill()
 
 
 class Broom(BaseWeapon):

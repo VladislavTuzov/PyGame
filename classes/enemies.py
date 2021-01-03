@@ -3,6 +3,7 @@ from math import hypot, atan2, cos, sin
 import pygame
 
 from config import FPS
+from classes.weapons import Staff
 
 
 class BaseEnemy(pygame.sprite.Sprite):
@@ -21,6 +22,11 @@ class BaseEnemy(pygame.sprite.Sprite):
             self.kill()
             points += self.points_cost
 
+    def shoot(self, target, bullets):
+        bullet = self.weapon.shoot(target)
+        if bullet:
+            bullets.add(bullet)
+
     def update(self, hero):
         x0, y0 = self.rect.center
         x1, y1 = hero.rect.center
@@ -29,12 +35,15 @@ class BaseEnemy(pygame.sprite.Sprite):
         y_dist = y1 - y0
         dist = hypot(x_dist, y_dist)
 
-        if dist >= 50:
+        if dist >= 150:
             coeff = atan2(y_dist, x_dist)
             self.rect.x += self.speed * round(cos(coeff), 1)
             self.rect.y += self.speed * round(sin(coeff), 1)
+
+        self.weapon.rect.center = self.rect.center
 
 
 class Dardo(BaseEnemy):
     def __init__(self):
         super().__init__('dardo', hp=3)
+        self.weapon = Staff()

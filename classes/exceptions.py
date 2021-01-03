@@ -8,3 +8,7 @@ class NewGamePseudoError(Exception):
 
 class PortalInteractPseudoError(Exception):
 	pass
+
+
+class HeroDeath(Exception):
+	pass
