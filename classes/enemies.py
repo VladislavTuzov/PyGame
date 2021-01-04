@@ -9,7 +9,10 @@ from classes.weapons import Staff
 class BaseEnemy(pygame.sprite.Sprite):
     def __init__(self, name, hp, points_cost=1000):
         super().__init__()
-        self.image = pygame.image.load(f'source/enemies/{name}.png')
+        self.image_right = pygame.image.load(f'source/enemies/{name}.png')
+        self.image_left = pygame.transform.flip(self.image_right, True, False)
+
+        self.image = self.image_left
         self.rect = self.image.get_rect()
 
         self.hp = hp
@@ -31,6 +34,13 @@ class BaseEnemy(pygame.sprite.Sprite):
         x0, y0 = self.rect.center
         x1, y1 = hero.rect.center
 
+        if x0 < x1:
+            self.image = self.image_right
+            self.weapon.change_direction(1)
+        else:
+            self.image = self.image_left
+            self.weapon.change_direction(-1)
+
         x_dist = x1 - x0
         y_dist = y1 - y0
         dist = hypot(x_dist, y_dist)
@@ -47,3 +57,4 @@ class Dardo(BaseEnemy):
     def __init__(self):
         super().__init__('dardo', hp=3)
         self.weapon = Staff()
+        # self.weapon.change_direction()
