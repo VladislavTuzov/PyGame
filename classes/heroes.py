@@ -29,12 +29,12 @@ class BaseHero(pygame.sprite.Sprite):
         self.is_acceleration = False
 
     def load_sheet(self, hero_name):
-        self.left_frames = deque()
+        self.right_frames = deque()
         self.cut_sheet(hero_name, 4, 1)
 
-        self.right_frames = deque([
+        self.left_frames = deque([
             pygame.transform.flip(frame, True, False)
-            for frame in self.left_frames
+            for frame in self.right_frames
         ])
 
         self.currect_frames = self.left_frames
@@ -49,7 +49,7 @@ class BaseHero(pygame.sprite.Sprite):
                 frame_location = (self.rect.w * i, self.rect.h * j)
                 frame = sheet.subsurface(
                     pygame.Rect(frame_location, self.rect.size))
-                self.left_frames.extendleft([frame] * 15)
+                self.right_frames.extendleft([frame] * 15)
 
     def change_direction(self, x_vector_change, y_vector_change):
         self.direction[0] += x_vector_change
