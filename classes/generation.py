@@ -97,20 +97,32 @@ class Location:
         return False, None
 
     def place_hero(self, hero, direction):
+        plate_width, plate_height = get_plate_size(self.location)
+
         if direction == "left":
             hero.rect.midleft = self.rect.midleft
-            hero.rect.x += 10
+            if isinstance(self, Room):
+                hero.rect.x += plate_width
         elif direction == "right":
             hero.rect.midright = self.rect.midright
-            hero.rect.x -= 10
+            if isinstance(self, Room):
+                hero.rect.x -= plate_width
         elif direction == "top":
             hero.rect.midtop = self.rect.midtop
-            hero.rect.y += 10
+            if isinstance(self, Room):
+                hero.rect.y += plate_height
         elif direction == "bottom":
             hero.rect.midbottom = self.rect.midbottom
-            hero.rect.y -= 10
+            if isinstance(self, Room):
+                hero.rect.y -= plate_height
 
     def delete_enemies_spawns(self):
+        pass
+
+    def close_gates(self):
+        pass
+
+    def open_gates(self):
         pass
 
 
@@ -119,12 +131,13 @@ class Room(Location):
         self.width = len(pattern[0])
         self.height = len(pattern)
         self.location = location
+        self.pattern = pattern
 
-        self.image = self._parse_pattern(pattern)
+        self.image = self._parse_pattern()
         self.rect = self.image.get_rect()
         self.rect.center = SCREEN_CENTER
 
-    def _parse_pattern(self, pattern):
+    def _parse_pattern(self):
         plate_size = get_plate_size(self.location)
         plate_width, plate_height = plate_size
 
@@ -142,7 +155,7 @@ class Room(Location):
         self.enemies_spawnpoints = []
 
         image = pygame.Surface((image_width, image_height))
-        for i, row in enumerate(pattern):
+        for i, row in enumerate(self.pattern):
             for j, cell in enumerate(row):
                 on_room_x = plate_width * j
                 on_room_y = plate_height * i
@@ -194,15 +207,36 @@ class Room(Location):
 
         return image
 
+    def _redraw_image(self, with_gates=True):
+        plate_width, plate_height = get_plate_size(self.location)
+
+        for i, row in enumerate(self.pattern):
+            for j, cell in enumerate(row):
+                on_room_x = plate_width * j
+                on_room_y = plate_height * i
+                on_room_cords = (on_room_x, on_room_y)
+
+                if cell == helpers.GATES:
+                    if with_gates:
+                        gate = pygame.image.load(get_random_gate(self.location))
+                        self.image.blit(gate, on_room_cords)
+                    else:
+                        wall = pygame.image.load(get_random_wall(self.location))
+                        self.image.blit(wall, on_room_cords)
+
     def randomize_enemies_spawns(self):
         if self.enemies_spawnpoints:
             self.enemies_spawnpoints = sample(self.enemies_spawnpoints, 5)
 
     def close_gates(self):
         self.walls.extend(self.gates)
+        self._redraw_image(with_gates=False)
+        self.close_gates = (lambda: None)  # use this function only one time
 
     def open_gates(self):
         self.walls = [wall for wall in self.walls if wall not in self.gates]
+        self._redraw_image(with_gates=True)
+        self.open_gates = (lambda: None)  # use this function only one time
 
     def delete_enemies_spawns(self):
         self.enemies_spawnpoints.clear()

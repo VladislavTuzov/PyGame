@@ -55,6 +55,9 @@ def play_room(screen, font, cursor, hero, room, points):
         enemy.rect.center = enemy_spawnpoint
         enemies.add(enemy)
 
+    if enemies:
+        room.close_gates()
+
     bullets = pygame.sprite.Group()
     enemies_bullets = helpers.EnemiesBullets()
 
@@ -103,6 +106,7 @@ def play_room(screen, font, cursor, hero, room, points):
 
         if not enemies:
             room.delete_enemies_spawns()
+            room.open_gates()
 
         screen.fill("black")
 
