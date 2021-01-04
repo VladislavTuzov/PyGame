@@ -35,12 +35,16 @@ class Level:
                 if cell in helpers.ROOMS:
                     pattern = patterns.get_random_pattern(cell)
                     self._add_gates(pattern, i, j)
-                    room = Room(pattern.pattern, self.location)
-                    self.matrix[i][j] = room
-                    if cell == helpers.SPAWN:
-                        self.current_room = self.matrix[i][j]
+                    if cell == helpers.PORTAL:
+                        room = PortalRoom(pattern.pattern, self.location)
+                    elif cell == helpers.ROOM:
+                        room = Room(pattern.pattern, self.location)
+                    elif cell == helpers.SPAWN:
+                        room = Spawn(pattern.pattern, self.location)
+                        self.current_room = room
                         self.current_x = j
                         self.current_y = i
+                    self.matrix[i][j] = room
                 elif cell in helpers.TUNNELS:
                     tunnel = Tunnel(self, self.location, cell)
                     self.matrix[i][j] = tunnel
@@ -85,6 +89,16 @@ class Location:
     enemies_spawnpoints = []
     other_sprites = helpers.InteractionGroup()
 
+    def __init__(self, pattern, location):
+        self.width = len(pattern[0])
+        self.height = len(pattern)
+        self.location = location
+        self.pattern = pattern
+
+        self.image = self._parse_pattern()
+        self.rect = self.image.get_rect()
+        self.rect.center = SCREEN_CENTER
+
     def is_hero_outside_room(self, hero):
         if hero.rect.x < self.rect.x:
             return True, (-1, 0)
@@ -127,16 +141,6 @@ class Location:
 
 
 class Room(Location):
-    def __init__(self, pattern, location):
-        self.width = len(pattern[0])
-        self.height = len(pattern)
-        self.location = location
-        self.pattern = pattern
-
-        self.image = self._parse_pattern()
-        self.rect = self.image.get_rect()
-        self.rect.center = SCREEN_CENTER
-
     def _parse_pattern(self):
         plate_size = get_plate_size(self.location)
         plate_width, plate_height = plate_size
@@ -151,7 +155,6 @@ class Room(Location):
         self.gates = []
         self.other_sprites = helpers.InteractionGroup()
 
-        self.hero_position = (0, 0)
         self.enemies_spawnpoints = []
 
         image = pygame.Surface((image_width, image_height))
@@ -182,26 +185,10 @@ class Room(Location):
                     gate_rect = pygame.Rect(on_screen_coords, plate_size)
                     self.gates.append(gate_rect)
 
-                elif cell == helpers.BIRTH:
-                    self.hero_position = on_screen_coords
-                    plate = pygame.image.load(get_random_plate(self.location))
-                    image.blit(plate, on_room_cords)
-
                 elif cell == helpers.ENEMY:
                     self.enemies_spawnpoints.append(on_screen_coords)
                     plate = pygame.image.load(get_random_plate(self.location))
                     image.blit(plate, on_room_cords)
-
-                elif cell == helpers.PORTAL:
-                    plate = pygame.image.load(get_random_plate(self.location))
-                    image.blit(plate, on_room_cords)
-
-                    portal_center = (
-                        on_screen_coords[0] + plate_width // 2,
-                        on_screen_coords[1] + plate_height // 2,
-                    )
-                    portal = Portal(portal_center)
-                    self.other_sprites.add(portal)
 
         self.randomize_enemies_spawns()
 
@@ -240,6 +227,115 @@ class Room(Location):
 
     def delete_enemies_spawns(self):
         self.enemies_spawnpoints.clear()
+
+
+class PortalRoom(Location):
+    def _parse_pattern(self):
+        plate_size = get_plate_size(self.location)
+        plate_width, plate_height = plate_size
+
+        image_width = self.width * plate_width
+        image_height = self.height * plate_height
+
+        image_center_x = image_width // 2
+        image_center_y = image_height // 2
+
+        self.walls = []
+        self.gates = []
+        self.other_sprites = helpers.InteractionGroup()
+
+        image = pygame.Surface((image_width, image_height))
+        for i, row in enumerate(self.pattern):
+            for j, cell in enumerate(row):
+                on_room_x = plate_width * j
+                on_room_y = plate_height * i
+                on_room_cords = (on_room_x, on_room_y)
+
+                on_screen_coords = (
+                    SCREEN_CENTER_X - (image_center_x - on_room_x),
+                    SCREEN_CENTER_Y - (image_center_y - on_room_y),
+                )
+
+                if cell == helpers.FLOOR:
+                    plate = pygame.image.load(get_random_plate(self.location))
+                    image.blit(plate, on_room_cords)
+
+                elif cell == helpers.WALL:
+                    wall = pygame.image.load(get_random_wall(self.location))
+                    image.blit(wall, on_room_cords)
+                    wall_rect = pygame.Rect(on_screen_coords, plate_size)
+                    self.walls.append(wall_rect)
+
+                elif cell == helpers.GATES:
+                    gate = pygame.image.load(get_random_gate(self.location))
+                    image.blit(gate, on_room_cords)
+                    gate_rect = pygame.Rect(on_screen_coords, plate_size)
+                    self.gates.append(gate_rect)
+
+                elif cell == helpers.PORTAL:
+                    plate = pygame.image.load(get_random_plate(self.location))
+                    image.blit(plate, on_room_cords)
+
+                    portal_center = (
+                        on_screen_coords[0] + plate_width // 2,
+                        on_screen_coords[1] + plate_height // 2,
+                    )
+                    portal = Portal(portal_center)
+                    self.other_sprites.add(portal)
+
+        return image
+
+
+class Spawn(Location):
+    def _parse_pattern(self):
+        plate_size = get_plate_size(self.location)
+        plate_width, plate_height = plate_size
+
+        image_width = self.width * plate_width
+        image_height = self.height * plate_height
+
+        image_center_x = image_width // 2
+        image_center_y = image_height // 2
+
+        self.walls = []
+        self.gates = []
+
+        self.hero_position = (0, 0)
+
+        image = pygame.Surface((image_width, image_height))
+        for i, row in enumerate(self.pattern):
+            for j, cell in enumerate(row):
+                on_room_x = plate_width * j
+                on_room_y = plate_height * i
+                on_room_cords = (on_room_x, on_room_y)
+
+                on_screen_coords = (
+                    SCREEN_CENTER_X - (image_center_x - on_room_x),
+                    SCREEN_CENTER_Y - (image_center_y - on_room_y),
+                )
+
+                if cell == helpers.FLOOR:
+                    plate = pygame.image.load(get_random_plate(self.location))
+                    image.blit(plate, on_room_cords)
+
+                elif cell == helpers.WALL:
+                    wall = pygame.image.load(get_random_wall(self.location))
+                    image.blit(wall, on_room_cords)
+                    wall_rect = pygame.Rect(on_screen_coords, plate_size)
+                    self.walls.append(wall_rect)
+
+                elif cell == helpers.GATES:
+                    gate = pygame.image.load(get_random_gate(self.location))
+                    image.blit(gate, on_room_cords)
+                    gate_rect = pygame.Rect(on_screen_coords, plate_size)
+                    self.gates.append(gate_rect)
+
+                elif cell == helpers.BIRTH:
+                    self.hero_position = on_screen_coords
+                    plate = pygame.image.load(get_random_plate(self.location))
+                    image.blit(plate, on_room_cords)
+
+        return image
 
 
 class Tunnel(Location):
