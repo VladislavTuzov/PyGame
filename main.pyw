@@ -24,7 +24,7 @@ def main():
     pygame.display.set_caption('Game')
 
     hero = Knight()
-    hero.add_weapon(AWP())
+    hero.add_weapon(BasketBall())
     hero.add_weapon(Broom())
 
     try:

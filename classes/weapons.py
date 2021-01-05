@@ -1,9 +1,10 @@
-from math import hypot
+from math import hypot, atan2, cos, sin, pi, degrees
 from time import time
 
 import pygame
 
 from config import FPS, SOUND_VOLUME
+from helpers import get_direction_of_collision
 
 
 class BaseWeapon(pygame.sprite.Sprite):
@@ -128,3 +129,61 @@ class StaffBullet(BaseBullet):
     sound = pygame.mixer.Sound('source/weapons/staff/shot.wav')
     damage = 1
     speed = 280 / FPS
+
+
+class BasketBall(BaseWeapon):
+    def __init__(self):
+        super().__init__('basketball', cooldown=0.5)
+        self.bullet = BasketBullBullet
+
+class BasketBullBullet(BaseBullet):
+    image = pygame.image.load('source/weapons/basketball/bullet.png')
+    sound = pygame.mixer.Sound('source/weapons/basketball/shot.wav')
+    bounce_sound = pygame.mixer.Sound('source/weapons/basketball/bounce.wav')
+    damage = 2
+    speed = 560 / FPS
+
+    def shoot(self, start, target):
+        # attributes for flight calcutations
+        self.current_distance = 0
+        self.x0, self.y0 = start
+        x1, y1 = target
+        self.angle = atan2(y1 - self.y0, x1 - self.x0)
+
+        self.play_sound()
+
+    def update(self, walls, enemies, points):
+        self.update_pos()
+
+        if (index := self.rect.collidelist(walls)) != -1:
+            wall = walls[index]
+            direction = get_direction_of_collision(
+                wall, self.rect, self.x_shift, self.y_shift)
+            if direction == "bottom":
+                self.angle = -self.angle
+            elif direction == "left":
+                self.angle = pi - self.angle
+            elif direction == "up":
+                self.angle = -self.angle
+            elif direction == "right":
+                self.angle = -abs(pi + self.angle)
+            self.rect.center = self.prev_center
+
+        elif collided_enemies := enemies.collidesprite(self):
+            enemy = collided_enemies[0]
+            enemy.hit(self, points)
+            self.kill()
+
+    def update_pos(self):
+        self.current_distance += self.speed
+        if self.current_distance >= self.max_distance:
+            self.kill()
+
+        self.prev_rect = self.rect.copy()
+        self.prev_center = self.rect.center
+        self.x_shift = self.speed * cos(self.angle)
+        self.y_shift = self.speed * sin(self.angle)
+        
+        # self.rect.x += self.x_shift
+        # self.rect.y += self.y_shift
+        self.rect.move_ip(self.x_shift, self.y_shift)

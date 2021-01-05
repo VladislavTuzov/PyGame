@@ -99,3 +99,14 @@ class Points:
 
     def __str__(self):
         return str(self.value)
+
+
+def get_direction_of_collision(rect1, rect2, x_shift, y_shift):
+    if not rect1.colliderect(rect2.move(0, -y_shift)):
+        return "bottom"
+    elif not rect1.colliderect(rect2.move(0, +y_shift)):
+        return "up"
+    elif not rect1.colliderect(rect2.move(+x_shift, 0)):
+        return "right"
+    elif not rect1.colliderect(rect2.move(-x_shift, 0)):
+        return "left"
