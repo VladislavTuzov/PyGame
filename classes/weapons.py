@@ -1,4 +1,4 @@
-from math import hypot, atan2, cos, sin, pi, degrees
+from math import hypot, atan2, cos, sin, pi
 from time import time
 
 import pygame
@@ -133,8 +133,9 @@ class StaffBullet(BaseBullet):
 
 class BasketBall(BaseWeapon):
     def __init__(self):
-        super().__init__('basketball', cooldown=0.5)
+        super().__init__('basketball', cooldown=1)
         self.bullet = BasketBullBullet
+
 
 class BasketBullBullet(BaseBullet):
     image = pygame.image.load('source/weapons/basketball/bullet.png')
@@ -146,9 +147,9 @@ class BasketBullBullet(BaseBullet):
     def shoot(self, start, target):
         # attributes for flight calcutations
         self.current_distance = 0
-        self.x0, self.y0 = start
+        self.x, self.y = start
         x1, y1 = target
-        self.angle = atan2(y1 - self.y0, x1 - self.x0)
+        self.angle = atan2(y1 - self.y, x1 - self.x)
 
         self.play_sound()
 
@@ -159,14 +160,10 @@ class BasketBullBullet(BaseBullet):
             wall = walls[index]
             direction = get_direction_of_collision(
                 wall, self.rect, self.x_shift, self.y_shift)
-            if direction == "bottom":
+            if direction in ("up", "bottom"):
                 self.angle = -self.angle
-            elif direction == "left":
+            elif direction in ("left", "right"):
                 self.angle = pi - self.angle
-            elif direction == "up":
-                self.angle = -self.angle
-            elif direction == "right":
-                self.angle = -abs(pi + self.angle)
             self.rect.center = self.prev_center
 
         elif collided_enemies := enemies.collidesprite(self):
@@ -179,11 +176,8 @@ class BasketBullBullet(BaseBullet):
         if self.current_distance >= self.max_distance:
             self.kill()
 
-        self.prev_rect = self.rect.copy()
         self.prev_center = self.rect.center
         self.x_shift = self.speed * cos(self.angle)
         self.y_shift = self.speed * sin(self.angle)
-        
-        # self.rect.x += self.x_shift
-        # self.rect.y += self.y_shift
+
         self.rect.move_ip(self.x_shift, self.y_shift)
