@@ -16,6 +16,7 @@ from classes.exceptions import (
     ExitPseudoError, HeroDeath
 )
 from classes.interface import MenuButton
+import db
 import helpers
 
 
@@ -28,6 +29,7 @@ def play(screen, font, cursor, hero, location="dungeon"):
             level = play_level(screen, font, cursor, hero, level, location, points)
         except HeroDeath as e:
             gameover_screen(*e.args)
+            db.save(points)
             return
 
 

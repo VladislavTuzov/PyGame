@@ -27,15 +27,17 @@ def main():
     hero.add_weapon(BasketBall())
     hero.add_weapon(Broom())
 
-    try:
-        menu.menu_screen(screen)
-    except NewGamePseudoError:
+    while True:
         try:
-            pygame.mouse.set_visible(False)
-            cursor = CustomCursor(config.CURSOR_FILENAME)
-            gameplay.play(screen, font, cursor, hero)
-        except ExitPseudoError:
-            pass
+            pygame.mouse.set_visible(True)
+            menu.menu_screen(screen, font)
+        except NewGamePseudoError:
+            try:
+                pygame.mouse.set_visible(False)
+                cursor = CustomCursor(config.CURSOR_FILENAME)
+                gameplay.play(screen, font, cursor, hero)
+            except ExitPseudoError:
+                continue
 
     pygame.quit()
 
