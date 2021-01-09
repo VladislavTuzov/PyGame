@@ -165,6 +165,7 @@ class BasketBullBullet(BaseBullet):
             elif direction in ("left", "right"):
                 self.angle = pi - self.angle
             self.rect.center = self.prev_center
+            self.play_bounce_sound()
 
         elif collided_enemies := enemies.collidesprite(self):
             enemy = collided_enemies[0]
@@ -181,3 +182,7 @@ class BasketBullBullet(BaseBullet):
         self.y_shift = self.speed * sin(self.angle)
 
         self.rect.move_ip(self.x_shift, self.y_shift)
+
+    def play_bounce_sound(self):
+        self.bounce_sound.set_volume(SOUND_VOLUME)
+        self.bounce_sound.play()
