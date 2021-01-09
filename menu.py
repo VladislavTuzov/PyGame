@@ -11,6 +11,9 @@ import db
 def menu_screen(screen, font):
     new_game_button, high_scores_button = draw_menu(screen)
 
+    pygame.mixer.music.load("source/music/menu.wav")
+    pygame.mixer.music.play(loops=-1, fade_ms=10000)
+
     while True:
         for event in pygame.event.get():
             if (event.type == pygame.QUIT
@@ -26,8 +29,6 @@ def menu_screen(screen, font):
 
 
 def draw_menu(screen):
-    pygame.mixer.music.load("source/music/menu.wav")
-
     screen_rect = screen.get_rect()
     screen_width, screen_height = screen_rect.size
 
@@ -39,8 +40,6 @@ def draw_menu(screen):
         "new_game", (SCREEN_CENTER_X, SCREEN_CENTER_Y - shift))
     high_scores_button = MenuButton(
         "high_scores", (SCREEN_CENTER_X, SCREEN_CENTER_Y + shift))
-
-    pygame.mixer.music.play(loops=-1, fade_ms=10000)
 
     screen.blit(background, (1, 1))
     screen.blit(new_game_button.image, new_game_button.rect)
