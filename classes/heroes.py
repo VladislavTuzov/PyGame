@@ -103,6 +103,7 @@ class BaseHero(pygame.sprite.Sprite):
     def hit(self, bullet):
         self.hp -= bullet.damage
         if self.hp <= 0:
+            self.direction = [0, 0]
             raise HeroDeath("Game over")
 
     def shoot(self, target, bullets):
